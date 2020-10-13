@@ -3,6 +3,8 @@ Russian GPT trained with 2048 context length (ruGPT2048) and Russian GPT2 large 
 
 We suggest you use ruGPT2Large because this model is more stable and tested.
 
+Examples [here](examples/)
+
 Table of contents
 * [Setup ruGPT2048](#Setup-ruGPT2048)
 * [Setup ruGPT2Large](#Setup-ruGPT2Large)
