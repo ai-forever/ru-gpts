@@ -55,4 +55,4 @@ Run script for pretrain: `bash ./examples/pretrain_ruGPT2Large_essay.sh`.
 
 We obtain around 3 perplexity on valid set. Sample of generation you can see [here](./pretrain_ruGPT2Large_essay_sample.txt)
 
-You can download pretrained checkpoint [here]().
+You can download pretrained checkpoint [here](https://drive.google.com/file/d/1AtK_2a-gx7-BBy8oBDlDSbbc0Z8JFCoa/view?usp=sharing).
