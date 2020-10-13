@@ -21,7 +21,7 @@ Supports only python3.6.
 
 To use this repo please install the latest supported versions of PyTorch with GPU support. 
 
-Additionally, part of this codebase leverages tensorflow-cpu to (optionally) perform dataloading of TFRecords for GPT training. We recommend either utilizing the provided Dockerfile in [`./docker/`](docker) or creating a virtual environment (to avoid breaking existing tf installations) and install our `requirements.txt`. 
+Additionally, part of this codebase leverages tensorflow-cpu to (optionally) perform dataloading of TFRecords for GPT training. We recommend creating a virtual environment (to avoid breaking existing tf installations) and install our `requirements.txt`. 
 
 ```
 python -m pip install virtualenv
