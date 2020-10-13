@@ -5,8 +5,8 @@ For contest: you can obtain checkpoints from aws s3.
 
 | Section                    | Description                                                                                                                                                |
 |----------------------------|------------------------------------------------------------------------------------------------------------------------------------------
-| [ruGPT2048 fintune on essays](#ruGPT2048 finetune on essays) | Examples of finetuning ruGPT2048 model for generating school essays. |
-| [ruGPT2Large fintune on essays](#ruGPT2Large finetune on essays) | Examples of finetuning ruGPT2Large model for generating school essays. |
+| [ruGPT2048 fintune on essays](#ruGPT2048-finetune-on-essays) | Examples of finetuning ruGPT2048 model for generating school essays. |
+| [ruGPT2Large fintune on essays](#ruGPT2Large-finetune-on-essays) | Examples of finetuning ruGPT2Large model for generating school essays. |
 
 
 ## ruGPT2048 fintune on essays
