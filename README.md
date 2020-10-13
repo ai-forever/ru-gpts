@@ -4,12 +4,12 @@ Russian GPT trained with 2048 context length (ruGPT2048) and Russian GPT2 large 
 We suggest you use ruGPT2Large because this model is more stable and tested.
 
 Table of contents
-* [Setup ruGPT2048](# Setup ruGPT2048)
-* [Setup ruGPT2Large](# Setup ruGPT2Large)
-* [Details of pretraining ruGPT2048](# Details of pretraining ruGPT2048)
-* [Details of pretraining ruGPT2Large](# Details of pretraining ruGPT2Large)
-* [Usage ruGPT2048](# Usage ruGPT2048)
-* [Usage ruGPT2Large](# Usage ruGPT2Large)
+* [Setup ruGPT2048](#Setup ruGPT2048)
+* [Setup ruGPT2Large](#Setup ruGPT2Large)
+* [Details of pretraining ruGPT2048](#Details of pretraining ruGPT2048)
+* [Details of pretraining ruGPT2Large](#Details of pretraining ruGPT2Large)
+* [Usage ruGPT2048](#Usage ruGPT2048)
+* [Usage ruGPT2Large](#Usage ruGPT2Large)
 
 
 # Setup
@@ -37,7 +37,7 @@ pip install torch-blocksparse
 
 Torch-Blocksparse depends on CUDA 10.1 and the [Triton](https://github.com/ptillet/triton) language and compiler, which requires llvm-9.
 
-## ruGPT2Large
+## Setup ruGPT2Large
 This model is smaller and was trained with [transformers==v2.8.0](https://github.com/huggingface/transformers/tree/v2.8.0).
 For installing use command:
 ```
