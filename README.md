@@ -47,6 +47,7 @@ pip install transformers
 ```
 
 # Details of pretraining
+All GPUs are  Tesla V100-SXM3 32 Gb.
 ## Details of pretraining ruGPT2048
 Model was trained on 1024 context length with transformers by SberDevices team on 80B tokens around 3 epochs. After that we finetune this on 2048 context. For load transformers checkpoint use `--load-openai`.
 
