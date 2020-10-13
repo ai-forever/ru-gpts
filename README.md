@@ -137,7 +137,7 @@ ruGPT2048: или автор книги по бизнесу!
 ```
 
 ## Usage ruGPT2Large
-We've provided 2 scripts that pretrain and generate with ruGPT2Large from [transformers(https://github.com/huggingface/transformers/tree/v2.8.0) original code.
+We've provided 2 scripts that pretrain and generate with ruGPT2Large from [transformers](https://github.com/huggingface/transformers/tree/v2.8.0) original code.
 
 ### Finetuning
 #### Data preparation
