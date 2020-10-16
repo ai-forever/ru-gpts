@@ -1,5 +1,5 @@
-# ruGPT2048 and ruGPT2Large
-Russian GPT trained with 2048 context length (ruGPT2048) and Russian GPT2 large trained with 1024 context length
+# ruGPT2048, ruGPT2Large and ruGPTMedium2048
+Russian GPT trained with 2048 context length (ruGPT2048), Russian GPT2 large (ruGPT2Large) trained with 1024 context length and Russian GPT Medium trained with context 2048 (ruGPTMedium2048).
 
 We suggest you use ruGPT2Large because this model is more stable and tested.
 
@@ -8,10 +8,13 @@ Examples [here](examples/)
 Table of contents
 * [Setup ruGPT2048](#Setup-ruGPT2048)
 * [Setup ruGPT2Large](#Setup-ruGPT2Large)
+* [Setup ruGPT2Large](#Setup-ruGPTMedium2048)
 * [Details of pretraining ruGPT2048](#Details-of-pretraining-ruGPT2048)
 * [Details of pretraining ruGPT2Large](#Details-of-pretraining-ruGPT2Large)
+* [Details of pretraining ruGPTMedium2048](#Details-of-pretraining-ruGPTMedium2048)
 * [Usage ruGPT2048](#Usage-ruGPT2048)
 * [Usage ruGPT2Large](#Usage-ruGPT2Large)
+* [Usage ruGPTMedium2048](#Usage-ruGPTMedium2048)
 
 
 # Setup
@@ -46,6 +49,9 @@ For installing use command:
 pip install transformers
 ```
 
+## Setup ruGPTMedium2048
+For this model you can use code from microsoft [realization](https://github.com/microsoft/DeepSpeedExamples/tree/master/Megatron-LM) of Megatron-LM in our repo or use transformers interface. Therefore, you shoukd follow the instructions for ruGPT2Large or ruGPT2048 for installation.
+
 # Details of pretraining
 All GPUs are  Tesla V100-SXM3 32 Gb.
 ## Details of pretraining ruGPT2048
@@ -58,9 +64,14 @@ Perplexity is 16 on test set.
 You can obtain this model [here](https://drive.google.com/file/d/12JkbnzSoQwJqanVP-zoLNnFX3e4HHyvY/view?usp=sharing). 
 
 ## Details of pretraining ruGPT2Large
-Model was trained on 1024 context length with transformers by SberDevices team.
+Model was trained on 1024 context length with transformers by SberDevices team on 170Gb data on 64 GPUs 3 weeks.
 
 You can obtain this model [here](https://drive.google.com/file/d/1r65MwU0arie8NggxpSmc_3Ja5ldRNS70/view?usp=sharing)
+
+## Details of pretraining ruGPTMedium2048
+Model was trained on 1024 context length with transformers by SberDevices team on 170Gb data on 64 GPUs 3 weeks.
+
+You can obtain this model [here](https://drive.google.com/file/d/1GsTOqAOPKFfL8fu5Beag6_u8NcdtI3AA/view?usp=sharing)
 
 # Usage
 ## Usage ruGPT2048
@@ -173,3 +184,6 @@ Example of generation:
 Context: на словах ты лев толстой
 ruGPT2Large: на словах ты лев толстой кожи, а в деле — просто тряпка!
 ```
+
+## Usage ruGPTMedium2048
+Choose one of ruGPT2048 or ruGPT2Large way. This is the same.
