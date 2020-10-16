@@ -8,7 +8,7 @@ Examples [here](examples/)
 Table of contents
 * [Setup ruGPT2048](#Setup-ruGPT2048)
 * [Setup ruGPT2Large](#Setup-ruGPT2Large)
-* [Setup ruGPT2Large](#Setup-ruGPTMedium2048)
+* [Setup ruGPTMedium2048](#Setup-ruGPTMedium2048)
 * [Details of pretraining ruGPT2048](#Details-of-pretraining-ruGPT2048)
 * [Details of pretraining ruGPT2Large](#Details-of-pretraining-ruGPT2Large)
 * [Details of pretraining ruGPTMedium2048](#Details-of-pretraining-ruGPTMedium2048)
