@@ -186,4 +186,4 @@ ruGPT2Large: на словах ты лев толстой кожи, а в дел
 ```
 
 ## Usage ruGPTMedium2048
-Choose one of ruGPT2048 or ruGPT2Large way. This is the same.
+Choose one of [ruGPT2048](#Usage-ruGPT2048) or [ruGPT2Large](#Usage-ruGPT2Large) way. This is the same.
