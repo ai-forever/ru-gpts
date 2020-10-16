@@ -55,7 +55,7 @@ For this model you can use code from microsoft [realization](https://github.com/
 # Details of pretraining
 All GPUs are  Tesla V100-SXM3 32 Gb.
 ## Details of pretraining ruGPT2048
-Model was trained on 1024 context length with transformers by SberDevices team on 80B tokens around 3 epochs. After that we finetune this on 2048 context. For load transformers checkpoint use `--load-openai`.
+Model was trained on 1024 context length with transformers by [SberDevices](https://sberdevices.ru/) team on 80B tokens around 3 epochs. After that we finetune this on 2048 context. For load transformers checkpoint use `--load-openai`.
 
 The training process took around two weeks on 8 DGX2 (128 GPUs) for 1024 context and 1 day (still training) on 10 GPUs for 2048 context on [Christophari](https://sbercloud.ru/ru/christofari).
 
@@ -64,12 +64,14 @@ Perplexity is 16 on test set.
 You can obtain this model [here](https://drive.google.com/file/d/12JkbnzSoQwJqanVP-zoLNnFX3e4HHyvY/view?usp=sharing). 
 
 ## Details of pretraining ruGPT2Large
-Model was trained on 1024 context length with transformers by SberDevices team on 170Gb data on 64 GPUs 3 weeks.
+Model was trained on 1024 context length with transformers by [SberDevices](https://sberdevices.ru/) team on 80B tokens around 3 epoch. After that model was finetuned on 2048 context.
+
+Total training time took around 16 days on 64 GPUs.
 
 You can obtain this model [here](https://drive.google.com/file/d/1r65MwU0arie8NggxpSmc_3Ja5ldRNS70/view?usp=sharing)
 
 ## Details of pretraining ruGPTMedium2048
-Model was trained on 1024 context length with transformers by SberDevices team on 170Gb data on 64 GPUs 3 weeks.
+Model was trained on 1024 context length with transformers by [SberDevices](https://sberdevices.ru/) team on 170Gb data on 64 GPUs 3 weeks.
 
 You can obtain this model [here](https://drive.google.com/file/d/1GsTOqAOPKFfL8fu5Beag6_u8NcdtI3AA/view?usp=sharing)
 
