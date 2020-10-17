@@ -5,6 +5,8 @@ We suggest you use ruGPT2Large because this model is more stable and tested.
 
 Examples [here](examples/)
 
+**Note: If you cannot download the checkpoint, try adding it to your google drive following this [issue](https://www.geekrar.com/fix-bypass-google-drive-download-limit-error/)**
+
 Table of contents
 * [Setup ruGPT2048](#Setup-ruGPT2048)
 * [Setup ruGPT2Large](#Setup-ruGPT2Large)
@@ -19,7 +21,7 @@ Table of contents
 
 # Setup
 ## Setup ruGPT2048
-Code reused from microsoft [realization](https://github.com/microsoft/DeepSpeedExamples/tree/master/Megatron-LM) of Megatron-LM.
+Code reused from microsoft [implementation](https://github.com/microsoft/DeepSpeedExamples/tree/master/Megatron-LM) of Megatron-LM.
 Supports only python3.6.
 
 To use this repo please install the latest supported versions of PyTorch with GPU support. 
@@ -50,7 +52,7 @@ pip install transformers
 ```
 
 ## Setup ruGPTMedium2048
-For this model you can use code from microsoft [realization](https://github.com/microsoft/DeepSpeedExamples/tree/master/Megatron-LM) of Megatron-LM in our repo or use transformers interface. Therefore, you should follow the instructions for ruGPT2Large or ruGPT2048 for installation.
+For this model you can use code from microsoft [implementation](https://github.com/microsoft/DeepSpeedExamples/tree/master/Megatron-LM) of Megatron-LM in our repo or use transformers interface. Therefore, you should follow the instructions for ruGPT2Large or ruGPT2048 for installation.
 
 # Details of pretraining
 All GPUs are  Tesla V100-SXM3 32 Gb.
