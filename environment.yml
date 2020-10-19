@@ -9,8 +9,10 @@ dependencies:
   - pip
   - pytorch>=1.3
   - cuda100 
+  - cudatoolkit
+  - cudatoolkit-dev
   - tensorboard
-  - nvidia-apex
+#  - nvidia-apex
   - pip:
     - nltk>=3.4
     - numpy>=1.15.4

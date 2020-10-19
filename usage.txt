@@ -1,45 +1,49 @@
-export CUDA_VISIBLE_DEVICES=2
+conda activate rugpt
+#export CUDA_VISIBLE_DEVICES=2
+#sudo apt install gcc-8 g++-8 
+#sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 80 --slave /usr/bin/g++ g++ /usr/bin/g++-8 --slave /usr/bin/gcov gcov /usr/bin/gcov-8
+#then install apex
 
 python generate_transformers.py \
     --model_type=gpt2 \
-    --model_name_or_path=/home/u/gpt2_large_bbpe_v50 \
+    --model_name_or_path=/home/ubuntu/gpt2_large_bbpe_v50 \
     --k=10 \
     --p=0.9
 
 python pretrain_transformers.py \
     --block_size=1023 \
-    --train_data_file=/home/u/gpt_text/pelevin_train.txt \
-    --output_dir=/home/u/gpt2_large_bbpe_v50 \
+    --train_data_file=/home/ubuntu/gpt_text/pelevin_train.txt \
+    --output_dir=/home/ubuntu/gpt2_large_bbpe_v50 \
     --model_type=gpt2 \
-    --model_name_or_path=/home/u/gpt2_large_bbpe_v50 \
+    --model_name_or_path=/home/ubuntu/gpt2_large_bbpe_v50 \
     --do_eval \
-    --eval_data_file=/home/u/gpt_text/tolstoy_valid.txt \
+    --eval_data_file=/home/ubuntu/gpt_text/tolstoy_valid.txt \
     --fp16
 
 # perplexity = tensor(14.0039)    
 
 python pretrain_transformers.py \
     --block_size=1023 \
-    --train_data_file=/home/u/gpt_text/pelevin_train.txt \
-    --output_dir=/home/u/gpt2_large_bbpe_v50 \
+    --train_data_file=/home/ubuntu/gpt_text/pelevin_train.txt \
+    --output_dir=/home/ubuntu/gpt2_large_bbpe_v50 \
     --model_type=gpt2 \
-    --model_name_or_path=/home/u/gpt2_large_bbpe_v50 \
+    --model_name_or_path=/home/ubuntu/gpt2_large_bbpe_v50 \
     --do_eval \
-    --eval_data_file=/home/u/gpt_text/pelevin_valid.txt \
+    --eval_data_file=/home/ubuntu/gpt_text/pelevin_valid.txt \
     --fp16
 
 # perplexity = tensor(18.5913)
 
 python pretrain_transformers.py \
     --block_size=1023 \
-    --output_dir=/home/u/gpt2_large_bbpe_v50/checkpoints \
+    --output_dir=/home/ubuntu/gpt2_large_bbpe_v50/pelevin \
     --model_type=gpt2 \
-    --model_name_or_path=/home/u/gpt2_large_bbpe_v50 \
+    --model_name_or_path=/home/ubuntu/gpt2_large_bbpe_v50 \
     --do_train \
-    --train_data_file=/home/u/gpt_text/pelevin_train.txt \
+    --train_data_file=/home/ubuntu/gpt_text/pelevin_train.txt \
     --save_steps=1129 \
     --do_eval \
-    --eval_data_file=/home/u/gpt_text/pelevin_valid.txt \
+    --eval_data_file=/home/ubuntu/gpt_text/pelevin_valid.txt \
+    --num_train_epochs=15 \
     --fp16
 
-test
