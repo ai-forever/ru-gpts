@@ -41,3 +41,5 @@ python pretrain_transformers.py \
     --do_eval \
     --eval_data_file=/home/u/gpt_text/pelevin_valid.txt \
     --fp16
+
+test
