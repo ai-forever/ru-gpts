@@ -63,19 +63,19 @@ The training process took around two weeks on 8 DGX2 (128 GPUs) for 1024 context
 
 Perplexity is 16 on test set.
 
-You can obtain this model here [GDrive](https://drive.google.com/file/d/12JkbnzSoQwJqanVP-zoLNnFX3e4HHyvY/view?usp=sharing) [Yandex.Disk](https://yadi.sk/d/kchlR0MWF8MqvQ). 
+You can obtain this model here [GDrive](https://drive.google.com/file/d/12JkbnzSoQwJqanVP-zoLNnFX3e4HHyvY/view?usp=sharing) [Yandex.Disk](https://yadi.sk/d/kchlR0MWF8MqvQ) [GDrive option-2](https://drive.google.com/file/d/1_6teqyyuDFQKvrdzEclueHcwrMrEllHe/view?usp=sharing). 
 
 ## Details of pretraining ruGPT3Large
 Model was trained on 1024 context length with transformers by [SberDevices](https://sberdevices.ru/) team on 80B tokens around 3 epoch. After that model was finetuned on 2048 context.
 
 Total training time took around 16 days on 64 GPUs.
 
-You can obtain this model here [GDrive](https://drive.google.com/file/d/1r65MwU0arie8NggxpSmc_3Ja5ldRNS70/view?usp=sharing) [Yandex.Disk](https://yadi.sk/d/B-zj3eojA3KmUQ)
+You can obtain this model here [GDrive](https://drive.google.com/file/d/1r65MwU0arie8NggxpSmc_3Ja5ldRNS70/view?usp=sharing) [Yandex.Disk](https://yadi.sk/d/B-zj3eojA3KmUQ) [GDrive option-2](https://drive.google.com/file/d/1T34vvUo0np0td9mO2KIt3nEXKqtdyj5G/view?usp=sharing). 
 
 ## Details of pretraining ruGPT3Medium2048
 Model was trained on 1024 context length with transformers by [SberDevices](https://sberdevices.ru/) team on 170Gb data on 64 GPUs 3 weeks.
 
-You can obtain this model here [GDrive](https://drive.google.com/file/d/1GsTOqAOPKFfL8fu5Beag6_u8NcdtI3AA/view?usp=sharing) [Yandex.Disk](https://yadi.sk/d/1TGEhhkwtpUl4Q)
+You can obtain this model here [GDrive](https://drive.google.com/file/d/1GsTOqAOPKFfL8fu5Beag6_u8NcdtI3AA/view?usp=sharing) [Yandex.Disk](https://yadi.sk/d/1TGEhhkwtpUl4Q) [GDrive option-2](https://drive.google.com/file/d/13WJty8auBvnBmGFl2IA4dy0v2_z5oRAl/view?usp=sharing). 
 
 # Usage
 ## Usage ruGPT2048
