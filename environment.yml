@@ -24,4 +24,6 @@ dependencies:
     - transformers==2.8.0
     - tensorflow-cpu
     - fastai>=2
+    - tendo
+    - fastapi
 #    - torch-blocksparse

@@ -1,2 +1,5 @@
 runs/
 .vscode/settings.json
+logs/
+pelevin/
+poetry/
