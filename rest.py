@@ -29,6 +29,7 @@ model = amp.initialize(model, opt_level='O2')
 def get_sample(prompt, length:int, num_samples:int, allow_linebreak:bool):
     logger.info(prompt)
     encoded_prompt = tokenizer.encode(prompt, add_special_tokens=False, return_tensors="pt").to(device)
+    encoded_prompt = encoded_prompt[:,length-1023:]
     bad_words_ids = [tokenizer.encode('[')[0], tokenizer.encode('(')[0], tokenizer.encode('1\xa01')[1]]
     linebreak = tokenizer.encode("1\n1")[1]
     bad_words_ids += [] if allow_linebreak else [linebreak]
