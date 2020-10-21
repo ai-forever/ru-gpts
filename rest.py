@@ -7,7 +7,7 @@ from os import environ
 
 device = environ.get('DEVICE', 'cuda:2')
 model_path = environ.get('MODEL', 'poetry')
-flavor_id = device + environ.get('INSTANCE', ':0')
+flavor_id = model_path + device + environ.get('INSTANCE', ':0')
 
 from tendo import singleton
 me = singleton.SingleInstance(flavor_id=flavor_id)
@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 tokenizer = GPT2Tokenizer.from_pretrained(model_path)
 model = GPT2LMHeadModel.from_pretrained(model_path)
 model.to(device)
-model.eval();
+model.eval()
 
 from apex import amp
 model = amp.initialize(model, opt_level='O2')
@@ -32,6 +32,7 @@ def get_sample(prompt, length:int, num_samples:int, allow_linebreak:bool):
     bad_words_ids = [tokenizer.encode('[')[0], tokenizer.encode('(')[0], tokenizer.encode('1\xa01')[1]]
     linebreak = tokenizer.encode("1\n1")[1]
     bad_words_ids += [] if allow_linebreak else [linebreak]
+    bad_words_ids = [[b] for b in bad_words_ids] + [[linebreak,linebreak]]
     output_sequences = model.generate(
             input_ids=encoded_prompt,
             max_length=length + len(encoded_prompt[0]),
@@ -39,7 +40,7 @@ def get_sample(prompt, length:int, num_samples:int, allow_linebreak:bool):
             top_k=0,
             top_p=0.9,
             do_sample=True,num_return_sequences=num_samples,
-            bad_words_ids = [[b] for b in bad_words_ids]
+            bad_words_ids = bad_words_ids
         )
     
     if len(output_sequences.shape) > 2:
@@ -48,9 +49,7 @@ def get_sample(prompt, length:int, num_samples:int, allow_linebreak:bool):
     for generated_sequence_idx, generated_sequence in enumerate(output_sequences):
         generated_sequence = generated_sequence.tolist()
         text = tokenizer.decode(generated_sequence, clean_up_tokenization_spaces=True)
-        total_sequence = (
-            prompt + text[len(tokenizer.decode(encoded_prompt[0], clean_up_tokenization_spaces=True)) :]
-        )
+        total_sequence = text[len(tokenizer.decode(encoded_prompt[0], clean_up_tokenization_spaces=True)) :]
         generated_sequences.append(total_sequence)
 
     reg_text = [re.match(r'[\w\W]*[\.!?]\n', item) for item in generated_sequences]
@@ -63,7 +62,7 @@ from starlette.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 import threading
 
-app = FastAPI(title="Russian GPT-2", version="0.1",)
+app = FastAPI(title="Russian GPT-2", version="0.2",)
 app.add_middleware(
         CORSMiddleware,
         allow_origins=["*"],

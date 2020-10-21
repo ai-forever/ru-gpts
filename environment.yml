@@ -26,4 +26,5 @@ dependencies:
     - fastai>=2
     - tendo
     - fastapi
+    - uvicorn
 #    - torch-blocksparse

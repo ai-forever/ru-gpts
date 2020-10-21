@@ -3,3 +3,4 @@ runs/
 logs/
 pelevin/
 poetry/
+__pycache__
