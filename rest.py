@@ -75,7 +75,7 @@ lock = threading.RLock()
 
 class Prompt(BaseModel):
     prompt:str = Field(..., max_length=3000, title='Model prompt')
-    length:int = Field(15, ge=1, le=60, title='Number of tokens generated in each sample')
+    length:int = Field(15, ge=1, le=150, title='Number of tokens generated in each sample')
     num_samples:int = Field(3, ge=1, le=5, title='Number of samples generated')
     allow_linebreak:bool = Field(False, title='Allow linebreak in a sample')
 
