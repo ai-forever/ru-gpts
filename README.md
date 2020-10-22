@@ -154,7 +154,15 @@ ruGPT3Large: или автор книги по бизнесу!
 
 
 ## Usage ruGPT3Medium
-Choose one of [ruGPT3Large](#Usage-ruGPT3Large) or [ruGPT2Large](#Usage-ruGPT2Large) way. This is the same.
+Choose one of [ruGPT3Large](#Usage-ruGPT3Large) or [ruGPT2Large](#Usage-ruGPT2Large) way. This is the same. Or use transformers interface:
+
+```
+from transformers import AutoTokenizer, AutoModel
+
+tokenizer = AutoTokenizer.from_pretrained("sberbank-ai/rugpt3medium_based_on_gpt2")
+
+model = AutoModel.from_pretrained("sberbank-ai/rugpt3medium_based_on_gpt2")
+```
 
 ## Usage ruGPT2Large
 We've provided 2 scripts that pretrain and generate with ruGPT2Large from [transformers](https://github.com/huggingface/transformers/tree/v2.8.0) original code.
