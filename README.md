@@ -9,7 +9,7 @@ Examples [here](examples/)
 
 Table of contents
 * [Setup ruGPT3Large](#Setup-ruGPT3Large)
-* [Setup ruGPTMedium2048](#Setup-ruGPT3Medium)
+* [Setup ruGPT3Medium](#Setup-ruGPT3Medium)
 * [Setup ruGPT2Large](#Setup-ruGPT2Large)
 * [Details of pretraining ruGPT3Large](#Details-of-pretraining-ruGPT3Large)
 * [Details of pretraining ruGPT3Medium](#Details-of-pretraining-ruGPT3Medium)
