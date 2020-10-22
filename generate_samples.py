@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Sample Generate ruGPT3Large"""
+"""Sample Generate ruGPT"""
 
 import os
 import time
@@ -38,7 +38,7 @@ from utils import print_rank_0
 def get_model(args):
     """Build the model."""
 
-    print_rank_0('building ruGPT3Large model ...')
+    print_rank_0('building ruGPT model ...')
     model = GPT2Model(
         num_layers=args.num_layers,
         vocab_size=args.vocab_size,
@@ -202,7 +202,7 @@ def generate_samples(model, tokenizer, args, device):
                     print("\nTaken time {:.2f}\n".format(time.time() - start_time), flush=True)
                     print("\nContext:", raw_text, flush=True)
                     trim_decode_tokens = decode_tokens[len(raw_text):decode_tokens.find("<pad>")]
-                    print("\nruGPT3Large:", trim_decode_tokens, flush=True)
+                    print("\nruGPT:", trim_decode_tokens, flush=True)
                 if token_end != -1:
                     break
 
@@ -213,7 +213,7 @@ def generate_samples(model, tokenizer, args, device):
                 output_tokens_list = tokens.view(-1).contiguous()
                 decode_tokens = tokenizer.DecodeIds(output_tokens_list.tolist())
                 trim_decode_tokens = decode_tokens[len(raw_text):decode_tokens.find("<pad>")]
-                print("\nruGPT3Large:", trim_decode_tokens, flush=True)
+                print("\nruGPT:", trim_decode_tokens, flush=True)
             raw_text = None
 
             torch.distributed.barrier(group=mpu.get_model_parallel_group())

@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Pretrain ruGPT3Large"""
+"""Pretrain ruGPT"""
 
 import math
 import os
@@ -52,7 +52,7 @@ else:
 def get_model(args):
     """Build the model."""
 
-    print_rank_0('building ruGPT3Large model ...')
+    print_rank_0('building ruGPT model ...')
     model = GPT2Model(
         num_layers=args.num_layers,
         vocab_size=args.vocab_size,
@@ -648,7 +648,7 @@ def main():
     # Pytorch distributed.
     initialize_distributed(args)
     if torch.distributed.get_rank() == 0:
-        print('Pretrain ruGPT3Large model')
+        print('Pretrain ruGPT model')
         print_args(args)
 
     # Random seeds for reproducability.
