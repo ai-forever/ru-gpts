@@ -15,8 +15,8 @@ Table of contents
 * [Details of pretraining ruGPT3Medium2048](#Details-of-pretraining-ruGPT3Medium2048)
 * [Details of pretraining ruGPT2Large](#Details-of-pretraining-ruGPT2Large)
 * [Usage ruGPT2048](#Usage-ruGPT2048)
-* [Usage ruGPT2Large](#Usage-ruGPT2Large)
 * [Usage ruGPT3Medium2048](#Usage-ruGPT3Medium2048)
+* [Usage ruGPT2Large](#Usage-ruGPT2Large)
 
 
 # Setup
