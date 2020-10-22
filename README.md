@@ -63,7 +63,7 @@ The training process took around two weeks on 8 DGX2 (128 GPUs) for 1024 context
 
 Perplexity is 16 on test set.
 
-You can obtain this model here [GDrive](https://drive.google.com/file/d/12JkbnzSoQwJqanVP-zoLNnFX3e4HHyvY/view?usp=sharing) [Yandex.Disk](https://yadi.sk/d/kchlR0MWF8MqvQ) [GDrive option-2](https://drive.google.com/file/d/1_6teqyyuDFQKvrdzEclueHcwrMrEllHe/view?usp=sharing). 
+You can obtain this model here [GDrive](https://drive.google.com/file/d/12JkbnzSoQwJqanVP-zoLNnFX3e4HHyvY/view?usp=sharing) [Yandex.Disk](https://yadi.sk/d/kchlR0MWF8MqvQ) [GDrive option-2](https://drive.google.com/file/d/1_6teqyyuDFQKvrdzEclueHcwrMrEllHe/view?usp=sharing) or use in transformers with model name `sberbank-ai/rugpt3large_based_on_gpt2` (see [usage](#Usage-ruGPT3Large) for details).
 
 ## Details of pretraining ruGPT3Medium
 Model was trained on 1024 context length with transformers by [SberDevices](https://sberdevices.ru/) team on 80B tokens around 3 epoch. After that model was finetuned on 2048 context.
@@ -135,6 +135,16 @@ mpirun --np ${NUM_GPUS_PER_WORKER} python pretrain_megatron.py \
        --finetune \
 ```
 
+Or you can use use transformers interface:
+
+```
+from transformers import AutoTokenizer, AutoModel
+
+tokenizer = AutoTokenizer.from_pretrained("sberbank-ai/rugpt3large_based_on_gpt2")
+
+model = AutoModel.from_pretrained("sberbank-ai/rugpt3large_based_on_gpt2")
+```
+
 ### Text Generation
 `bash ./scripts/generate_ruGPT3Large.sh`
 
@@ -154,7 +164,7 @@ ruGPT3Large: или автор книги по бизнесу!
 
 
 ## Usage ruGPT3Medium
-you can run megatron script with option `--load-openai` or use transformers interface:
+You can run megatron script with option `--load-openai` or use transformers interface:
 
 ```
 from transformers import AutoTokenizer, AutoModel
@@ -225,6 +235,6 @@ The script is capable of top-k, or top-p sampling as specified by the appropriat
 Example of generation:
 
 ```
-Context: на словах ты лев толстой
-ruGPT2Large: на словах ты лев толстой кожи, а в деле — просто тряпка!
+Context: На словах ты Лев Толстой, а на деле
+ruGPT: На словах ты Лев Толстой, а на деле – козел!» – так я про себя подумал, но решил не отвечать. Я встал, поклонился
 ```
