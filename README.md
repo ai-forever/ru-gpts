@@ -70,12 +70,12 @@ Model was trained on 1024 context length with transformers by [SberDevices](http
 
 Total training time took around 16 days on 64 GPUs.
 
-You can obtain this model here [GDrive](https://drive.google.com/file/d/1Lb9ILKw0N2ZSEG80QyaCvkp1b2RAw1pC/view?usp=sharing) [Yandex.Disk](https://yadi.sk/d/1TGEhhkwtpUl4Q) [GDrive option-2](https://drive.google.com/file/d/13WJty8auBvnBmGFl2IA4dy0v2_z5oRAl/view?usp=sharing). 
+You can obtain this model here [GDrive](https://drive.google.com/file/d/1Lb9ILKw0N2ZSEG80QyaCvkp1b2RAw1pC/view?usp=sharing) [Yandex.Disk](https://yadi.sk/d/1TGEhhkwtpUl4Q) [GDrive option-2](https://drive.google.com/file/d/13WJty8auBvnBmGFl2IA4dy0v2_z5oRAl/view?usp=sharing) or use in transformers with model name `sberbank-ai/rugpt3medium_based_on_gpt2` (see [usage](#Usage-ruGPT3Medium) for details). 
 
 ## Details of pretraining ruGPT2Large
 Model was trained on 1024 context length with transformers by [SberDevices](https://sberdevices.ru/) team on 170Gb data on 64 GPUs 3 weeks.
 
-You can obtain this model here [GDrive](https://drive.google.com/file/d/1r65MwU0arie8NggxpSmc_3Ja5ldRNS70/view?usp=sharing) [Yandex.Disk](https://yadi.sk/d/B-zj3eojA3KmUQ) [GDrive option-2](https://drive.google.com/file/d/1T34vvUo0np0td9mO2KIt3nEXKqtdyj5G/view?usp=sharing). 
+You can obtain this model here [GDrive](https://drive.google.com/file/d/1r65MwU0arie8NggxpSmc_3Ja5ldRNS70/view?usp=sharing) [Yandex.Disk](https://yadi.sk/d/B-zj3eojA3KmUQ) [GDrive option-2](https://drive.google.com/file/d/1T34vvUo0np0td9mO2KIt3nEXKqtdyj5G/view?usp=sharing) or use in transformers with model name `sberbank-ai/rugpt2large` (see [usage](#Usage-ruGPT2Large) for details).
 
 # Usage
 ## Usage ruGPT3Large
@@ -154,7 +154,7 @@ ruGPT3Large: или автор книги по бизнесу!
 
 
 ## Usage ruGPT3Medium
-Choose one of [ruGPT3Large](#Usage-ruGPT3Large) or [ruGPT2Large](#Usage-ruGPT2Large) way. This is the same. Or use transformers interface:
+you can run megatron script with option `--load-openai` or use transformers interface:
 
 ```
 from transformers import AutoTokenizer, AutoModel
@@ -162,6 +162,24 @@ from transformers import AutoTokenizer, AutoModel
 tokenizer = AutoTokenizer.from_pretrained("sberbank-ai/rugpt3medium_based_on_gpt2")
 
 model = AutoModel.from_pretrained("sberbank-ai/rugpt3medium_based_on_gpt2")
+```
+
+### Text Generation
+`bash ./scripts/generate_ruGPT3Medium.sh`
+
+Starts an interactive terminal session that generates text either conditionally or unconditionally depending on what the user enters into the prompt. 
+
+The script is capable of top-k, or top-p sampling as specified by the appropriate variables within the script.
+
+Example of generation:
+
+```
+Context >>> На словах ты Лев Толстой, а на деле
+ruGPT: На словах ты Лев Толстой, а на деле я — Лев Давидович Троцкий, — сказал я. — Так что мы еще посмотрим
+
+Context: как же джокер ты хитер
+ruGPT: как же джокер ты хитер, в этой игре
+ - Я не злодей, просто хотел узнать, можно ли узнать о чём?
 ```
 
 ## Usage ruGPT2Large
@@ -185,6 +203,16 @@ python pretrain_transformers.py \
     --do_eval \
     --eval_data_file=/home/jovyan/data/valid.txt \
     --fp16
+```
+
+Or use transformers interface:
+
+```
+from transformers import AutoTokenizer, AutoModel
+
+tokenizer = AutoTokenizer.from_pretrained("sberbank-ai/rugpt2large")
+
+model = AutoModel.from_pretrained("sberbank-ai/rugpt2large")
 ```
 
 ### Text Generation
