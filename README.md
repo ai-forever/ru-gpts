@@ -63,7 +63,7 @@ The training process took around two weeks on 8 DGX2 (128 GPUs) for 1024 context
 
 Perplexity is 16 on test set.
 
-You can obtain this model here [GDrive](https://drive.google.com/file/d/12JkbnzSoQwJqanVP-zoLNnFX3e4HHyvY/view?usp=sharing) [Yandex.Disk](https://yadi.sk/d/kchlR0MWF8MqvQ) [GDrive option-2](https://drive.google.com/file/d/1_6teqyyuDFQKvrdzEclueHcwrMrEllHe/view?usp=sharing) or use in transformers with model name `sberbank-ai/rugpt3large_based_on_gpt2` (see [usage](#Usage-ruGPT3Large) for details).
+You can obtain this model here [GDrive](https://drive.google.com/file/d/1t4xw-nvNLQ8kt9FrWW4bPEgCr45M98vu/view?usp=sharing) [Yandex.Disk](https://yadi.sk/d/kchlR0MWF8MqvQ) [GDrive option-2](https://drive.google.com/file/d/1_6teqyyuDFQKvrdzEclueHcwrMrEllHe/view?usp=sharing) or use in transformers with model name `sberbank-ai/rugpt3large_based_on_gpt2` (see [usage](#Usage-ruGPT3Large) for details).
 
 ## Details of pretraining ruGPT3Medium
 Model was trained on 1024 context length with transformers by [SberDevices](https://sberdevices.ru/) team on 80B tokens around 3 epoch. After that model was finetuned on 2048 context.
