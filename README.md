@@ -1,5 +1,5 @@
-# ruGPT2048, ruGPT3Large and ruGPT3Medium2048
-Russian GPT trained with 2048 context length (ruGPT2048), Russian GPT3 large (ruGPT3Large) trained with 1024 context length and Russian GPT Medium trained with context 2048 (ruGPT3Medium2048).
+# ruGPT2048, ruGPT3Medium2048 and ruGPT2Large
+Russian GPT trained with 2048 context length (ruGPT2048), Russian GPT Medium trained with context 2048 (ruGPT3Medium2048) and Russian GPT2 large (ruGPT2Large) trained with 1024 context length.
 
 We suggest you use ruGPT2Large because this model is more stable and tested.
 
@@ -9,13 +9,13 @@ Examples [here](examples/)
 
 Table of contents
 * [Setup ruGPT2048](#Setup-ruGPT2048)
-* [Setup ruGPT3Large](#Setup-ruGPT3Large)
 * [Setup ruGPTMedium2048](#Setup-ruGPTMedium2048)
+* [Setup ruGPT2Large](#Setup-ruGPT2Large)
 * [Details of pretraining ruGPT2048](#Details-of-pretraining-ruGPT2048)
-* [Details of pretraining ruGPT3Large](#Details-of-pretraining-ruGPT3Large)
 * [Details of pretraining ruGPT3Medium2048](#Details-of-pretraining-ruGPT3Medium2048)
+* [Details of pretraining ruGPT2Large](#Details-of-pretraining-ruGPT2Large)
 * [Usage ruGPT2048](#Usage-ruGPT2048)
-* [Usage ruGPT3Large](#Usage-ruGPT3Large)
+* [Usage ruGPT2Large](#Usage-ruGPT2Large)
 * [Usage ruGPT3Medium2048](#Usage-ruGPT3Medium2048)
 
 
@@ -44,15 +44,15 @@ pip install torch-blocksparse
 
 Torch-Blocksparse depends on CUDA 10.1 and the [Triton](https://github.com/ptillet/triton) language and compiler, which requires llvm-9.
 
-## Setup ruGPT3Large
+## Setup ruGPT3Medium2048
+For this model you can use code from microsoft [implementation](https://github.com/microsoft/DeepSpeedExamples/tree/master/Megatron-LM) of Megatron-LM in our repo or use transformers interface. Therefore, you should follow the instructions for ruGPT2Large or ruGPT2048 for installation.
+
+## Setup ruGPT2Large
 This model is smaller and was trained with [transformers==v2.8.0](https://github.com/huggingface/transformers/tree/v2.8.0).
 For installing use command:
 ```
 pip install transformers
 ```
-
-## Setup ruGPT3Medium2048
-For this model you can use code from microsoft [implementation](https://github.com/microsoft/DeepSpeedExamples/tree/master/Megatron-LM) of Megatron-LM in our repo or use transformers interface. Therefore, you should follow the instructions for ruGPT3Large or ruGPT2048 for installation.
 
 # Details of pretraining
 All GPUs are  Tesla V100-SXM3 32 Gb.
@@ -65,17 +65,17 @@ Perplexity is 16 on test set.
 
 You can obtain this model here [GDrive](https://drive.google.com/file/d/12JkbnzSoQwJqanVP-zoLNnFX3e4HHyvY/view?usp=sharing) [Yandex.Disk](https://yadi.sk/d/kchlR0MWF8MqvQ) [GDrive option-2](https://drive.google.com/file/d/1_6teqyyuDFQKvrdzEclueHcwrMrEllHe/view?usp=sharing). 
 
-## Details of pretraining ruGPT3Large
+## Details of pretraining ruGPT3Medium2048
 Model was trained on 1024 context length with transformers by [SberDevices](https://sberdevices.ru/) team on 80B tokens around 3 epoch. After that model was finetuned on 2048 context.
 
 Total training time took around 16 days on 64 GPUs.
 
-You can obtain this model here [GDrive](https://drive.google.com/file/d/1r65MwU0arie8NggxpSmc_3Ja5ldRNS70/view?usp=sharing) [Yandex.Disk](https://yadi.sk/d/B-zj3eojA3KmUQ) [GDrive option-2](https://drive.google.com/file/d/1T34vvUo0np0td9mO2KIt3nEXKqtdyj5G/view?usp=sharing). 
+You can obtain this model here [GDrive](https://drive.google.com/file/d/1GsTOqAOPKFfL8fu5Beag6_u8NcdtI3AA/view?usp=sharing) [Yandex.Disk](https://yadi.sk/d/1TGEhhkwtpUl4Q) [GDrive option-2](https://drive.google.com/file/d/13WJty8auBvnBmGFl2IA4dy0v2_z5oRAl/view?usp=sharing). 
 
-## Details of pretraining ruGPT3Medium2048
+## Details of pretraining ruGPT2Large
 Model was trained on 1024 context length with transformers by [SberDevices](https://sberdevices.ru/) team on 170Gb data on 64 GPUs 3 weeks.
 
-You can obtain this model here [GDrive](https://drive.google.com/file/d/1GsTOqAOPKFfL8fu5Beag6_u8NcdtI3AA/view?usp=sharing) [Yandex.Disk](https://yadi.sk/d/1TGEhhkwtpUl4Q) [GDrive option-2](https://drive.google.com/file/d/13WJty8auBvnBmGFl2IA4dy0v2_z5oRAl/view?usp=sharing). 
+You can obtain this model here [GDrive](https://drive.google.com/file/d/1r65MwU0arie8NggxpSmc_3Ja5ldRNS70/view?usp=sharing) [Yandex.Disk](https://yadi.sk/d/B-zj3eojA3KmUQ) [GDrive option-2](https://drive.google.com/file/d/1T34vvUo0np0td9mO2KIt3nEXKqtdyj5G/view?usp=sharing). 
 
 # Usage
 ## Usage ruGPT2048
@@ -152,8 +152,12 @@ Context: как же джокер ты хитер
 ruGPT2048: или автор книги по бизнесу!
 ```
 
-## Usage ruGPT3Large
-We've provided 2 scripts that pretrain and generate with ruGPT3Large from [transformers](https://github.com/huggingface/transformers/tree/v2.8.0) original code.
+
+## Usage ruGPTMedium2048
+Choose one of [ruGPT2048](#Usage-ruGPT2048) or [ruGPT2Large](#Usage-ruGPT2Large) way. This is the same.
+
+## Usage ruGPT2Large
+We've provided 2 scripts that pretrain and generate with ruGPT2Large from [transformers](https://github.com/huggingface/transformers/tree/v2.8.0) original code.
 
 ### Finetuning
 #### Data preparation
@@ -188,6 +192,3 @@ Example of generation:
 Context: на словах ты лев толстой
 ruGPT2Large: на словах ты лев толстой кожи, а в деле — просто тряпка!
 ```
-
-## Usage ruGPTMedium2048
-Choose one of [ruGPT2048](#Usage-ruGPT2048) or [ruGPT3Large](#Usage-ruGPT3Large) way. This is the same.
