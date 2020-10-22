@@ -70,7 +70,7 @@ Model was trained on 1024 context length with transformers by [SberDevices](http
 
 Total training time took around 16 days on 64 GPUs.
 
-You can obtain this model here [GDrive](https://drive.google.com/file/d/1GsTOqAOPKFfL8fu5Beag6_u8NcdtI3AA/view?usp=sharing) [Yandex.Disk](https://yadi.sk/d/1TGEhhkwtpUl4Q) [GDrive option-2](https://drive.google.com/file/d/13WJty8auBvnBmGFl2IA4dy0v2_z5oRAl/view?usp=sharing). 
+You can obtain this model here [GDrive](https://drive.google.com/file/d/1Lb9ILKw0N2ZSEG80QyaCvkp1b2RAw1pC/view?usp=sharing) [Yandex.Disk](https://yadi.sk/d/1TGEhhkwtpUl4Q) [GDrive option-2](https://drive.google.com/file/d/13WJty8auBvnBmGFl2IA4dy0v2_z5oRAl/view?usp=sharing). 
 
 ## Details of pretraining ruGPT2Large
 Model was trained on 1024 context length with transformers by [SberDevices](https://sberdevices.ru/) team on 170Gb data on 64 GPUs 3 weeks.
