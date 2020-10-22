@@ -11,9 +11,9 @@ host=$(hostname)
 gpt_options=" \
        --train-data /home/jovyan/data/all_essays.jsonl \
        --valid-data /home/jovyan/data/valid.jsonl \
-       --save /home/jovyan/rugpt2048/essays/checkpoints_${now}_${host} \
-       --load /home/jovyan/rugpt2048 \
-       --tensorboard-dir /home/jovyan/rugpt2048/essays/runs_${now}_${host} \
+       --save /home/jovyan/ruGPT3Large/essays/checkpoints_${now}_${host} \
+       --load /home/jovyan/ruGPT3Large \
+       --tensorboard-dir /home/jovyan/ruGPT3Large/essays/runs_${now}_${host} \
        --save-interval 500 \
        --eval-interval 500 \
        --log-interval 100 \
@@ -37,12 +37,12 @@ gpt_options=" \
        --checkpoint-activations \
        --loose-json \
        --text-key text \
-       --tokenizer-path /home/jovyan/rugpt2048 \
+       --tokenizer-path /home/jovyan/ruGPT3Large \
        --tokenizer-type GPT2BPETokenizer \
        --finetune \
 "
 
-run_cmd="mpirun --np ${NUM_GPUS_PER_WORKER} python pretrain_gpt2.py $@ ${gpt_options}"
+run_cmd="mpirun --np ${NUM_GPUS_PER_WORKER} python pretrain_megatron.py $@ ${gpt_options}"
 echo "${run_cmd}"
 eval "${run_cmd}"
 

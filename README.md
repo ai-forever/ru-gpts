@@ -92,7 +92,7 @@ We support three file formats for training, but all require preprocessing. First
 
 The name of the text field of the json can be changed by using the `--text-key` flag. The other metadata are optional and are not used in training.
 #### Running script
-`bash ./scripts/pretrain_ruGPT3Large.sh.sh`
+`bash ./scripts/pretrain_ruGPT3Large.sh`
 
 This script runs single gpu ruGPT3Large pretraining. This script contains command for running on [Christophari](https://sbercloud.ru/ru/christofari):
 
@@ -100,7 +100,7 @@ This script runs single gpu ruGPT3Large pretraining. This script contains comman
 MP_SIZE=1
 NUM_GPUS_PER_WORKER=1
 
-mpirun --np ${NUM_GPUS_PER_WORKER} python pretrain_gpt2.py \
+mpirun --np ${NUM_GPUS_PER_WORKER} python pretrain_megatron.py \
        --train-data /home/jovyan/data/train.jsonl \
        --valid-data /home/jovyan/data/valid.jsonl \
        --test-data /home/jovyan/data/valid.jsonl \

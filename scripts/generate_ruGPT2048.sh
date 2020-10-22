@@ -6,7 +6,7 @@ MP_SIZE=1
 NUM_GPUS_PER_WORKER=1
 
 gpt_options=" \
-       --load /home/jovyan/rugpt2048 \
+       --load /home/jovyan/ruGPT3Large \
        --model-parallel-size ${MP_SIZE} \
        --num-layers 24 \
        --hidden-size 1536 \
@@ -18,7 +18,7 @@ gpt_options=" \
        --distributed-backend nccl \
        --fp16 \
        --checkpoint-activations \
-       --tokenizer-path /home/jovyan/rugpt2048 \
+       --tokenizer-path /home/jovyan/ruGPT3Large \
        --tokenizer-type GPT2BPETokenizer \
        --finetune \
        --out-seq-length 200 \
