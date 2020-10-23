@@ -60,7 +60,7 @@ All GPUs are  Tesla V100-SXM3 32 Gb.
 ## Details of pretraining ruGPT3Large
 Model was trained on 1024 context length with transformers by [SberDevices](https://sberdevices.ru/) team on 80B tokens around 3 epochs. After that we finetune this on 2048 context. For load transformers checkpoint use `--load-openai`.
 
-The training process took around two weeks on 8 DGX2 (128 GPUs) for 1024 context and 1 day (still training) on 10 GPUs for 2048 context on [Christophari](https://sbercloud.ru/ru/christofari).
+The training process took around two weeks on 8 DGX2 (128 GPUs) for 1024 context and few days on 16 GPUs for 2048 context on [Christophari](https://sbercloud.ru/ru/christofari).
 
 Perplexity is 16 on test set.
 
