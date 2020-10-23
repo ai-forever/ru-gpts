@@ -16,7 +16,7 @@
 # limitations under the License.
 """ Conditional text generation with the auto-regressive models of the library (GPT/GPT-2/CTRL/Transformer-XL/XLNet)
 """
-
+import os
 
 import argparse
 import logging
@@ -255,6 +255,7 @@ def main():
             )
 
             generated_sequences.append(total_sequence)
+            os.system('clear')
             print(total_sequence)
         prompt_text = ""
         if args.prompt:
