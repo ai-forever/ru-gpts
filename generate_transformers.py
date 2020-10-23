@@ -255,7 +255,7 @@ def main():
             )
 
             generated_sequences.append(total_sequence)
-            os.system('clear')
+            # os.system('clear')
             print(total_sequence)
         prompt_text = ""
         if args.prompt:
