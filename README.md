@@ -169,6 +169,7 @@ Context: как же джокер ты хитер
 ruGPT3Large: или автор книги по бизнесу!
 ```
 
+Example of generation in colab [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sberbank-ai/ru-gpts/blob/master/examples/ruGPT3_generation_example.ipynb)
 
 ## Usage ruGPT3Medium
 You can run megatron script with option `--load-openai` or use transformers interface:
