@@ -16,7 +16,7 @@
 # limitations under the License.
 """ Conditional text generation with the auto-regressive models of the library (GPT/GPT-2/CTRL/Transformer-XL/XLNet)
 """
-
+import os
 
 import argparse
 import logging
@@ -240,7 +240,7 @@ def main():
             output_sequences.squeeze_()
 
         for generated_sequence_idx, generated_sequence in enumerate(output_sequences):
-            print("ruGPT2Large:".format(generated_sequence_idx + 1))
+            print("ruGPT:".format(generated_sequence_idx + 1))
             generated_sequence = generated_sequence.tolist()
 
             # Decode text
@@ -255,6 +255,7 @@ def main():
             )
 
             generated_sequences.append(total_sequence)
+            # os.system('clear')
             print(total_sequence)
         prompt_text = ""
         if args.prompt:

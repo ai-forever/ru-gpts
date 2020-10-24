@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Sample Generate ruGPT2048"""
+"""Sample Generate ruGPT"""
 
 import os
 import time
@@ -27,9 +27,9 @@ from data_utils import make_tokenizer
 from fp16 import FP16_Module
 from model import DistributedDataParallel as DDP
 from model import GPT2Model
-from pretrain_gpt2 import get_masks_and_position_ids
-from pretrain_gpt2 import initialize_distributed
-from pretrain_gpt2 import set_random_seed
+from pretrain_megatron import get_masks_and_position_ids
+from pretrain_megatron import initialize_distributed
+from pretrain_megatron import set_random_seed
 from utils import Timers
 from utils import load_checkpoint
 from utils import print_rank_0
@@ -38,7 +38,7 @@ from utils import print_rank_0
 def get_model(args):
     """Build the model."""
 
-    print_rank_0('building ruGPT2048 model ...')
+    print_rank_0('building ruGPT model ...')
     model = GPT2Model(
         num_layers=args.num_layers,
         vocab_size=args.vocab_size,
@@ -202,7 +202,7 @@ def generate_samples(model, tokenizer, args, device):
                     print("\nTaken time {:.2f}\n".format(time.time() - start_time), flush=True)
                     print("\nContext:", raw_text, flush=True)
                     trim_decode_tokens = decode_tokens[len(raw_text):decode_tokens.find("<pad>")]
-                    print("\nruGPT2048:", trim_decode_tokens, flush=True)
+                    print("\nruGPT:", trim_decode_tokens, flush=True)
                 if token_end != -1:
                     break
 
@@ -213,7 +213,7 @@ def generate_samples(model, tokenizer, args, device):
                 output_tokens_list = tokens.view(-1).contiguous()
                 decode_tokens = tokenizer.DecodeIds(output_tokens_list.tolist())
                 trim_decode_tokens = decode_tokens[len(raw_text):decode_tokens.find("<pad>")]
-                print("\nruGPT2048:", trim_decode_tokens, flush=True)
+                print("\nruGPT:", trim_decode_tokens, flush=True)
             raw_text = None
 
             torch.distributed.barrier(group=mpu.get_model_parallel_group())

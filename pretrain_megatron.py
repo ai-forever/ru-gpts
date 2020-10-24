@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Pretrain ruGPT2048"""
+"""Pretrain ruGPT"""
 
 import math
 import os
@@ -30,7 +30,7 @@ from arguments import get_args
 from configure_data import configure_data
 from fp16 import FP16_Module
 from fp16 import FP16_Optimizer
-from gpt2_data_loader import make_gpt2_dataloaders
+from gpt_data_loader import make_gpt2_dataloaders
 from learning_rates import AnnealingLR
 from model import GPT2Model
 from model import gpt2_get_params_for_weight_decay_optimization
@@ -52,7 +52,7 @@ else:
 def get_model(args):
     """Build the model."""
 
-    print_rank_0('building ruGPT2048 model ...')
+    print_rank_0('building ruGPT model ...')
     model = GPT2Model(
         num_layers=args.num_layers,
         vocab_size=args.vocab_size,
@@ -648,7 +648,7 @@ def main():
     # Pytorch distributed.
     initialize_distributed(args)
     if torch.distributed.get_rank() == 0:
-        print('Pretrain ruGPT2048 model')
+        print('Pretrain ruGPT model')
         print_args(args)
 
     # Random seeds for reproducability.

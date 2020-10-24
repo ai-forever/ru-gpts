@@ -12,9 +12,9 @@ gpt_options=" \
        --train-data /home/jovyan/data/train.jsonl \
        --valid-data /home/jovyan/data/valid.jsonl \
        --test-data /home/jovyan/data/valid.jsonl \
-       --save /home/jovyan/rugpt2048/checkpoints_${now}_${host} \
-       --load /home/jovyan/rugpt2048 \
-       --tensorboard-dir /home/jovyan/rugpt2048/runs_${now}_${host} \
+       --save /home/jovyan/ruGPT3Large/checkpoints_${now}_${host} \
+       --load /home/jovyan/ruGPT3Large \
+       --tensorboard-dir /home/jovyan/ruGPT3Large/runs_${now}_${host} \
        --save-interval 500 \
        --eval-interval 500 \
        --log-interval 100 \
@@ -38,7 +38,7 @@ gpt_options=" \
        --checkpoint-activations \
        --loose-json \
        --text-key text \
-       --tokenizer-path /home/jovyan/rugpt2048 \
+       --tokenizer-path /home/jovyan/ruGPT3Large \
        --tokenizer-type GPT2BPETokenizer \
        --finetune \
 "
