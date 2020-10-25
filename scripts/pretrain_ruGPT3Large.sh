@@ -43,7 +43,7 @@ gpt_options=" \
        --finetune \
 "
 
-run_cmd="mpirun --np ${NUM_GPUS_PER_WORKER} python pretrain_gpt2.py $@ ${gpt_options}"
+run_cmd="mpirun --np ${NUM_GPUS_PER_WORKER} python pretrain_megatron.py $@ ${gpt_options}"
 echo "${run_cmd}"
 eval "${run_cmd}"
 
