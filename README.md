@@ -28,7 +28,7 @@ To use this repo please install the latest supported versions of PyTorch with GP
 
 Additionally, part of this codebase leverages tensorflow-cpu to (optionally) perform dataloading of TFRecords for GPT training. We recommend creating a virtual environment (to avoid breaking existing tf installations) and install our `requirements.txt`. 
 
-```
+```bash
 python -m pip install virtualenv
 virtualenv gpt_env
 source gpt_env/bin/activate
@@ -37,7 +37,7 @@ pip install -r requirements.txt
 
 For using of sparse operations in attention additionally install [torch-blocksparse](https://github.com/ptillet/torch-blocksparse):
 
-```
+```bash
 source gpt_env/bin/activate
 pip install torch-blocksparse
 ```
@@ -50,7 +50,7 @@ For this model you can use code from microsoft [implementation](https://github.c
 ## Setup ruGPT2Large
 This model is smaller and was trained with [transformers==v2.8.0](https://github.com/huggingface/transformers/tree/v2.8.0).
 For installing use command:
-```
+```bash
 pip install transformers
 ```
 
@@ -92,7 +92,7 @@ We've provided 2 scripts that pretrain and generate with ruGPT3Large. Save and l
 #### Data preparation
 We support three file formats for training, but all require preprocessing. First, place your training data in a loose json format, with one json containing a text sample per line. For example:
 
-```
+```json
 {"src": "KISH", "text": "Как же джокер ты хитер", "type": "Ru", "id": "0", "title": "First Part"}
 {"src": "The Internet", "text": "Ты удачи приговор", "type": "Ru", "id": "42", "title": "Second Part"}
 ```
@@ -103,7 +103,7 @@ The name of the text field of the json can be changed by using the `--text-key` 
 
 This script runs single gpu ruGPT3Large pretraining. This script contains command for running on [Christophari](https://sbercloud.ru/ru/christofari):
 
-```
+```bash
 MP_SIZE=1
 NUM_GPUS_PER_WORKER=1
 
@@ -144,7 +144,7 @@ mpirun --np ${NUM_GPUS_PER_WORKER} python pretrain_megatron.py \
 
 Or you can use use transformers interface:
 
-```
+```python
 from transformers import AutoTokenizer, AutoModel
 
 tokenizer = AutoTokenizer.from_pretrained("sberbank-ai/rugpt3large_based_on_gpt2")
@@ -174,7 +174,7 @@ Example of generation in colab [![Open In Colab](https://colab.research.google.c
 ## Usage ruGPT3Medium
 You can run megatron script with option `--load-openai` or use transformers interface:
 
-```
+```python
 from transformers import AutoTokenizer, AutoModel
 
 tokenizer = AutoTokenizer.from_pretrained("sberbank-ai/rugpt3medium_based_on_gpt2")
@@ -211,7 +211,7 @@ We can pass to model raw text files.
 
 This script runs single gpu ruGPT3Large pretraining. This script contains command for running on [Christophari](https://sbercloud.ru/ru/christofari):
 
-```
+```bash
 python pretrain_transformers.py \
     --output_dir=/home/jovyan/rugpt2large/checkpoints_"${now}"_"${host}" \
     --model_type=gpt2 \
@@ -225,7 +225,7 @@ python pretrain_transformers.py \
 
 Or use transformers interface:
 
-```
+```python
 from transformers import AutoTokenizer, AutoModel
 
 tokenizer = AutoTokenizer.from_pretrained("sberbank-ai/rugpt2large")
