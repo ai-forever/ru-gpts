@@ -5,7 +5,7 @@ For contest: you can obtain checkpoints from aws s3.
 
 | Section                    | Description                                                                                                                                                |
 |----------------------------|------------------------------------------------------------------------------------------------------------------------------------------
-| [ruGPT3Large fintune on essays](#ruGPT3Large-finetune-on-essays) | Examples of finetuning ruGPT3Large model for generating school essays. |
+| [ruGPT3Large finetune on essays](#ruGPT3Large-finetune-on-essays) | Examples of finetuning ruGPT3Large model for generating school essays. |
 | [ruGPT2Large finetune on essays](#ruGPT2Large-finetune-on-essays) | Examples of finetuning ruGPT2Large model for generating school essays. |
 | [ruGPT3Small finetune on essays](#ruGPT3Small-finetune on-essays) | Examples of finetuning ruGPT3Small model for generating school essays in colab. |
 | [ruGPT3Large generate](#ruGPT3Large-generate) | Examples of generate with ruGPT3Large model in colab. |
