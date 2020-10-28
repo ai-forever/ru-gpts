@@ -1,4 +1,4 @@
-# ruGPT3Large, ruGPT3Medium and ruGPT2Large
+# ruGPT3Large, ruGPT3Medium, ruGPT3Small and ruGPT2Large
 Russian GPT trained with 2048 context length (ruGPT3Large), Russian GPT Medium trained with context 2048 (ruGPT3Medium) and Russian GPT2 large (ruGPT2Large) trained with 1024 context length.
 
 We suggest you use ruGPT2Large because this model is more stable and tested.
@@ -10,12 +10,14 @@ Examples [here](examples/)
 Table of contents
 * [Setup ruGPT3Large](#Setup-ruGPT3Large)
 * [Setup ruGPT3Medium](#Setup-ruGPT3Medium)
+* [Setup ruGPT3Small](#Setup-ruGPT3Small)
 * [Setup ruGPT2Large](#Setup-ruGPT2Large)
 * [Details of pretraining ruGPT3Large](#Details-of-pretraining-ruGPT3Large)
 * [Details of pretraining ruGPT3Medium](#Details-of-pretraining-ruGPT3Medium)
 * [Details of pretraining ruGPT2Large](#Details-of-pretraining-ruGPT2Large)
 * [Usage ruGPT3Large](#Usage-ruGPT3Large)
 * [Usage ruGPT3Medium](#Usage-ruGPT3Medium)
+* [Usage ruGPT3Small](#Usage-ruGPT3Small)
 * [Usage ruGPT2Large](#Usage-ruGPT2Large)
 
 
@@ -28,7 +30,7 @@ To use this repo please install the latest supported versions of PyTorch with GP
 
 Additionally, part of this codebase leverages tensorflow-cpu to (optionally) perform dataloading of TFRecords for GPT training. We recommend creating a virtual environment (to avoid breaking existing tf installations) and install our `requirements.txt`. 
 
-```
+```bash
 python -m pip install virtualenv
 virtualenv gpt_env
 source gpt_env/bin/activate
@@ -37,7 +39,7 @@ pip install -r requirements.txt
 
 For using of sparse operations in attention additionally install [torch-blocksparse](https://github.com/ptillet/torch-blocksparse):
 
-```
+```bash
 source gpt_env/bin/activate
 pip install torch-blocksparse
 ```
@@ -47,10 +49,13 @@ Torch-Blocksparse depends on CUDA 10.1 and the [Triton](https://github.com/ptill
 ## Setup ruGPT3Medium
 For this model you can use code from microsoft [implementation](https://github.com/microsoft/DeepSpeedExamples/tree/master/Megatron-LM) of Megatron-LM in our repo or use transformers interface. Therefore, you should follow the instructions for ruGPT2Large or ruGPT3Large for installation.
 
+## Setup ruGPT3Small
+For this model you can use code from microsoft [implementation](https://github.com/microsoft/DeepSpeedExamples/tree/master/Megatron-LM) of Megatron-LM in our repo or use transformers interface. Therefore, you should follow the instructions for ruGPT2Large or ruGPT3Large for installation.
+
 ## Setup ruGPT2Large
 This model is smaller and was trained with [transformers==v2.8.0](https://github.com/huggingface/transformers/tree/v2.8.0).
 For installing use command:
-```
+```bash
 pip install transformers
 ```
 
@@ -77,6 +82,15 @@ You can obtain this model here [GDrive](https://drive.google.com/file/d/1Lb9ILKw
 
 🤗HuggingFace model card [link](https://huggingface.co/sberbank-ai/rugpt3medium_based_on_gpt2)
 
+## Details of pretraining ruGPT3Small
+Model was trained on 1024 context length with transformers by [SberDevices](https://sberdevices.ru/) team on 80B tokens around 3 epoch. After that model was finetuned on 2048 context.
+
+Total training time took around 16 days on 64 GPUs.
+
+You can obtain this model here [GDrive](https://drive.google.com/file/d/19dyhhayJSVJpVPwPzqLRIdCtOddvkzJ4/view?usp=sharing) or use in transformers with model name `sberbank-ai/rugpt3small_based_on_gpt2` (see [usage](#Usage-ruGPT3Small) for details). 
+
+🤗HuggingFace model card [link](https://huggingface.co/sberbank-ai/rugpt3small_based_on_gpt2)
+
 ## Details of pretraining ruGPT2Large
 Model was trained on 1024 context length with transformers by [SberDevices](https://sberdevices.ru/) team on 170Gb data on 64 GPUs 3 weeks.
 
@@ -92,7 +106,7 @@ We've provided 2 scripts that pretrain and generate with ruGPT3Large. Save and l
 #### Data preparation
 We support three file formats for training, but all require preprocessing. First, place your training data in a loose json format, with one json containing a text sample per line. For example:
 
-```
+```json
 {"src": "KISH", "text": "Как же джокер ты хитер", "type": "Ru", "id": "0", "title": "First Part"}
 {"src": "The Internet", "text": "Ты удачи приговор", "type": "Ru", "id": "42", "title": "Second Part"}
 ```
@@ -103,7 +117,7 @@ The name of the text field of the json can be changed by using the `--text-key` 
 
 This script runs single gpu ruGPT3Large pretraining. This script contains command for running on [Christophari](https://sbercloud.ru/ru/christofari):
 
-```
+```bash
 MP_SIZE=1
 NUM_GPUS_PER_WORKER=1
 
@@ -144,7 +158,7 @@ mpirun --np ${NUM_GPUS_PER_WORKER} python pretrain_megatron.py \
 
 Or you can use use transformers interface:
 
-```
+```python
 from transformers import AutoTokenizer, AutoModel
 
 tokenizer = AutoTokenizer.from_pretrained("sberbank-ai/rugpt3large_based_on_gpt2")
@@ -161,7 +175,7 @@ The script is capable of top-k, or top-p sampling as specified by the appropriat
 
 Example of generation:
 
-```
+```text
 Context: на словах ты лев толстой
 ruGPT3Large: а в сущности, - ты тоже не дурак, просто так же, как и твой человек, то есть твоя "жизнь", а также как и ты думаешь по-настоящему "ты" и есть твои "жизнь" или "выбор" в отношении твоего положения.
 
@@ -174,7 +188,7 @@ Example of generation in colab [![Open In Colab](https://colab.research.google.c
 ## Usage ruGPT3Medium
 You can run megatron script with option `--load-openai` or use transformers interface:
 
-```
+```python
 from transformers import AutoTokenizer, AutoModel
 
 tokenizer = AutoTokenizer.from_pretrained("sberbank-ai/rugpt3medium_based_on_gpt2")
@@ -191,13 +205,44 @@ The script is capable of top-k, or top-p sampling as specified by the appropriat
 
 Example of generation:
 
-```
+```text
 Context >>> На словах ты Лев Толстой, а на деле
 ruGPT: На словах ты Лев Толстой, а на деле я — Лев Давидович Троцкий, — сказал я. — Так что мы еще посмотрим
 
 Context: как же джокер ты хитер
 ruGPT: как же джокер ты хитер, в этой игре
  - Я не злодей, просто хотел узнать, можно ли узнать о чём?
+```
+
+## Usage ruGPT3Small
+You can run megatron script with option `--load-openai` or use transformers interface:
+
+```python
+from transformers import AutoTokenizer, AutoModelWithLMHead
+
+tokenizer = AutoTokenizer.from_pretrained("sberbank-ai/rugpt3small_based_on_gpt2")
+
+model = AutoModelWithLMHead.from_pretrained("sberbank-ai/rugpt3small_based_on_gpt2")
+```
+
+### Text Generation
+`bash ./scripts/generate_ruGPT3Small.sh`
+
+Starts an interactive terminal session that generates text either conditionally or unconditionally depending on what the user enters into the prompt. 
+
+The script is capable of top-k, or top-p sampling as specified by the appropriate variables within the script.
+
+Example of generation:
+
+```text
+Context >>> На словах ты Лев Толстой, а на деле
+ruGPT: На словах ты Лев Толстой, а на деле – Толстой, – с улыбкой заметил Николай, – я вижу, что ты прав.
+
+– А вот это – другое дело, – сказал Лев Толстой, – это дело другое.
+
+– Да, да, – согласился Николай, – я прав.
+
+– А вот что, Лев Николаевич, – сказал Лев Толстой, – я думаю, что в этом отношении у меня нет оснований сомневаться в твоей правоте.
 ```
 
 ## Usage ruGPT2Large
