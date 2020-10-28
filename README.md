@@ -1,5 +1,5 @@
 # ruGPT3Large, ruGPT3Medium, ruGPT3Small and ruGPT2Large
-Russian GPT trained with 2048 context length (ruGPT3Large), Russian GPT Medium trained with context 2048 (ruGPT3Medium) and Russian GPT2 large (ruGPT2Large) trained with 1024 context length.
+Russian GPT trained with 2048 context length (ruGPT3Large), Russian GPT Medium trained with context 2048 (ruGPT3Medium), Russian GPT Small trained with context 2048 (ruGPT3Small) and Russian GPT2 large (ruGPT2Large) trained with 1024 context length.
 
 We suggest you use ruGPT2Large because this model is more stable and tested.
 
@@ -14,6 +14,7 @@ Table of contents
 * [Setup ruGPT2Large](#Setup-ruGPT2Large)
 * [Details of pretraining ruGPT3Large](#Details-of-pretraining-ruGPT3Large)
 * [Details of pretraining ruGPT3Medium](#Details-of-pretraining-ruGPT3Medium)
+* [Details of pretraining ruGPT3Small](#Details-of-pretraining-ruGPT3Small)
 * [Details of pretraining ruGPT2Large](#Details-of-pretraining-ruGPT2Large)
 * [Usage ruGPT3Large](#Usage-ruGPT3Large)
 * [Usage ruGPT3Medium](#Usage-ruGPT3Medium)
@@ -76,7 +77,7 @@ You can obtain this model here [GDrive](https://drive.google.com/file/d/1t4xw-nv
 ## Details of pretraining ruGPT3Medium
 Model was trained on 1024 context length with transformers by [SberDevices](https://sberdevices.ru/) team on 80B tokens around 3 epoch. After that model was finetuned on 2048 context.
 
-Total training time took around 16 days on 64 GPUs.
+Total training time took around one week on 32 GPUs.
 
 You can obtain this model here [GDrive](https://drive.google.com/file/d/1Lb9ILKw0N2ZSEG80QyaCvkp1b2RAw1pC/view?usp=sharing) [Yandex.Disk](https://yadi.sk/d/yE0cw0QIikCPAg) [GDrive option-2](https://drive.google.com/file/d/1gADn4VxDBVrxZ9Wv4bISbDjwCm_3mrDH/view?usp=sharing) or use in transformers with model name `sberbank-ai/rugpt3medium_based_on_gpt2` (see [usage](#Usage-ruGPT3Medium) for details). 
 
