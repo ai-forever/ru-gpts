@@ -6,8 +6,8 @@ For contest: you can obtain checkpoints from aws s3.
 | Section                    | Description                                                                                                                                                |
 |----------------------------|------------------------------------------------------------------------------------------------------------------------------------------
 | [ruGPT3Large fintune on essays](#ruGPT3Large-finetune-on-essays) | Examples of finetuning ruGPT3Large model for generating school essays. |
-| [ruGPT2Large fintune on essays](#ruGPT2Large-finetune-on-essays) | Examples of finetuning ruGPT2Large model for generating school essays. |
-| [ruGPT2Small fintune on essays](#ruGPT3Small-finetune-on-essays) | Examples of finetuning ruGPT3Small model for generating school essays in colab. |
+| [ruGPT2Large finetune on essays](#ruGPT2Large-finetune-on-essays) | Examples of finetuning ruGPT2Large model for generating school essays. |
+| [ruGPT3Small finetune on essays](#ruGPT3Small-finetune on-essays) | Examples of finetuning ruGPT3Small model for generating school essays in colab. |
 | [ruGPT3Large generate](#ruGPT3Large-generate) | Examples of generate with ruGPT3Large model in colab. |
 
 
@@ -34,7 +34,7 @@ We obtain around 8 perplexity on valid set. Sample of generation you can see [he
 
 You can download pretrained checkpoint [here](https://drive.google.com/file/d/13ezv9NpquKCB5TAgKC0jRRfxUKjzc7Mp/view?usp=sharing).
 
-## ruGPT2Large fintune on essays
+## ruGPT2Large finetune on essays
 
 Finetune ruGPT2Large for school essays generation.
 
@@ -59,7 +59,7 @@ We obtain around 3 perplexity on valid set. Sample of generation you can see [he
 
 You can download pretrained checkpoint [here](https://drive.google.com/file/d/1AtK_2a-gx7-BBy8oBDlDSbbc0Z8JFCoa/view?usp=sharing).
 
-## ruGPT3Small fintune on essays
+## ruGPT3Small finetune on essays
 Try example of finetune on essays and generation in colab [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sberbank-ai/ru-gpts/blob/master/examples/Finetune_ruGPT3Small.ipynb)
 
 ## ruGPT3Large generate
