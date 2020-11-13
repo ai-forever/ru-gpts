@@ -21,6 +21,9 @@ Table of contents
 * [Usage ruGPT3Small](#Usage-ruGPT3Small)
 * [Usage ruGPT2Large](#Usage-ruGPT2Large)
 
+# Christophari GPUs
+
+The organizers gave participants the opportunity to get access to Cristofari by SberCloud. To get access, please send to AIJ_ruGPT-3@sberbank.ru your request with brief information about your project. We will review your request and get back to you. Please note that the number of such accesses is limited - 100 accounts available. If necessary, please leave your request as early as possible.
 
 # Setup
 ## Setup ruGPT3Large
