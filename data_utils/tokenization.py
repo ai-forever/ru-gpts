@@ -24,7 +24,8 @@ import sentencepiece as spm
 import torch
 from nltk import tokenize as nltk_tokenize
 
-from .tokenization_gpt2 import GPT2Tokenizer
+# from .tokenization_gpt2 import GPT2Tokenizer
+from transformers import GPT2Tokenizer
 from .wordpiece import BertTokenizer, PRETRAINED_VOCAB_ARCHIVE_MAP
 
 

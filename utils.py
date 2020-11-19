@@ -245,6 +245,8 @@ def save_ds_checkpoint(iteration, model, args):
 def get_checkpoint_iteration(args):
     # Read the tracker file and set the iteration.
     tracker_filename = get_checkpoint_tracker_filename(args.load)
+    if args.load_openai:
+        return 0, True, True
     if not os.path.isfile(tracker_filename):
         print_rank_0('WARNING: could not find the metadata file {} '.format(
             tracker_filename))
@@ -283,13 +285,6 @@ def load_checkpoint(model, optimizer, lr_scheduler, args):
 
     else:
 
-        # Checkpoint.
-        checkpoint_name = get_checkpoint_name(args.load, iteration, release)
-
-        if mpu.get_data_parallel_rank() == 0:
-            print('global rank {} is loading checkpoint {}'.format(
-                torch.distributed.get_rank(), checkpoint_name))
-
         if args.load_openai:
             from utils import move_weights
             from model import DistributedDataParallel as DDP
@@ -307,6 +302,12 @@ def load_checkpoint(model, optimizer, lr_scheduler, args):
             model.cuda(torch.cuda.current_device())
             sd = {}
         else:
+            # Checkpoint.
+            checkpoint_name = get_checkpoint_name(args.load, iteration, release)
+
+            if mpu.get_data_parallel_rank() == 0:
+                print('global rank {} is loading checkpoint {}'.format(
+                    torch.distributed.get_rank(), checkpoint_name))
             sd = torch.load(checkpoint_name, map_location='cpu')
 
             if isinstance(model, torchDDP):
