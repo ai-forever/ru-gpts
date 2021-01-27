@@ -12,8 +12,8 @@ from transformers import GPT2Tokenizer, PreTrainedModel, PretrainedConfig
 
 import mpu
 from fp16 import FP16_Module
-from .model import GPT2Model
-from .download_utils import download_model_files
+from model import GPT2Model
+from download_utils import download_model_files
 from transformers.utils import logging
 
 
@@ -152,7 +152,7 @@ class ModelOutput(object):
         raise StopIteration
 
 
-class GenerationWrapper(PreTrainedModel):
+class RuGPT3XL(PreTrainedModel):
     def __init__(self, model, tokenizer, model_path, seq_len=512):
         super().__init__(PretrainedConfig())
         self.model = model
@@ -179,7 +179,7 @@ class GenerationWrapper(PreTrainedModel):
         model = setup_model(weights_path, deepspeed_config_path)
         model.cuda()
         model = model.eval()
-        return cls(model, tokenizer=tokenizer, seq_len=seq_len, model_path=model_path)
+        return cls(model, tokenizer=tokenizer, seq_len=seq_len, model_path=model_name_or_path)
 
     def prepare_inputs_for_generation(self, input_ids: torch.LongTensor, **kwargs):
         kwargs.update({"input_ids": input_ids})
