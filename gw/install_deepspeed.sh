@@ -1,0 +1,1 @@
+cd /tmp && git clone https://github.com/microsoft/DeepSpeed.git && cd DeepSpeed/ && git checkout ff58fa7e5a4f637a21d11daad0192683fe50ed15 && pip uninstall -y typing && pip install cpufeature && DS_BUILD_CPU_ADAM=1 DS_BUILD_SPARSE_ATTN=1 /tmp/DeepSpeed/install.sh -n && pip install typing
