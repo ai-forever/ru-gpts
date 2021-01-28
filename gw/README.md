@@ -74,10 +74,10 @@ If you have error while generation (see next section) with triton lib try reinst
 pip install triton==0.2.2
 ```
 
-Note! All installation pipeline tested on linux gpu server with cuda.
+Note! All installation pipeline was tested on linux gpu server with cuda.
 
 ## Usage
-Model had been added to hugging face and we can download this by our hugging face wrapper for this model.
+Model has been added to huggingface and we can [download](https://huggingface.co/sberbank-ai/rugpt3xl) this by our huggingface wrapper for this model.
 
 ```python
 import sys
@@ -96,3 +96,5 @@ res = gpt.generate(
 print(res)
 # ['Кто был президентом США в 2020? \nВ этом году выборы президента Соединенных Штатов Америки пройдут уже через несколько дней. И, как и всегда на протяжении последних лет (а это более чем 20-ти), кандидаты будут бороться за право стать главой государств']
 ```
+
+More exaples see [here](examples/ruGPT3XL_generation.ipynb)
