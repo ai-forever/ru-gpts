@@ -1,4 +1,4 @@
-# ruGPT3Large, ruGPT3Medium, ruGPT3Small and ruGPT2Large
+# ruGPT3XL, ruGPT3Large, ruGPT3Medium, ruGPT3Small and ruGPT2Large
 Russian GPT trained with 2048 context length (ruGPT3Large), Russian GPT Medium trained with context 2048 (ruGPT3Medium), Russian GPT Small trained with context 2048 (ruGPT3Small) and Russian GPT2 large (ruGPT2Large) trained with 1024 context length.
 
 We suggest you use ruGPT2Large because this model is more stable and tested.
@@ -8,14 +8,17 @@ Examples [here](examples/)
 **Note: If you cannot download the checkpoint, try adding it to your google drive following this [issue](https://www.geekrar.com/fix-bypass-google-drive-download-limit-error/)**
 
 Table of contents
+* [Setup ruGPT3XL](#Setup-ruGPT3XL)
 * [Setup ruGPT3Large](#Setup-ruGPT3Large)
 * [Setup ruGPT3Medium](#Setup-ruGPT3Medium)
 * [Setup ruGPT3Small](#Setup-ruGPT3Small)
 * [Setup ruGPT2Large](#Setup-ruGPT2Large)
+* [Details of pretraining ruGPT3XL](#Details-of-pretraining-ruGPT3XL)
 * [Details of pretraining ruGPT3Large](#Details-of-pretraining-ruGPT3Large)
 * [Details of pretraining ruGPT3Medium](#Details-of-pretraining-ruGPT3Medium)
 * [Details of pretraining ruGPT3Small](#Details-of-pretraining-ruGPT3Small)
 * [Details of pretraining ruGPT2Large](#Details-of-pretraining-ruGPT2Large)
+* [Usage ruGPT3XL](#Usage-ruGPT3XL)
 * [Usage ruGPT3Large](#Usage-ruGPT3Large)
 * [Usage ruGPT3Medium](#Usage-ruGPT3Medium)
 * [Usage ruGPT3Small](#Usage-ruGPT3Small)
@@ -26,6 +29,9 @@ Table of contents
 The organizers gave participants the opportunity to get access to Cristofari by SberCloud. To get access, please send to AIJ_ruGPT-3@sberbank.ru your request with brief information about your project. We will review your request and get back to you. Please note that the number of such accesses is limited - 100 accounts available. If necessary, please leave your request as early as possible.
 
 # Setup
+## Setup ruGPT3XL
+See all details [here](gw/)
+
 ## Setup ruGPT3Large
 Code reused from microsoft [implementation](https://github.com/microsoft/DeepSpeedExamples/tree/master/Megatron-LM) of Megatron-LM.
 Supports only python3.6.
@@ -66,6 +72,15 @@ pip install transformers
 # Details of pretraining
 All GPUs are  Tesla V100-SXM3 32 Gb.
 
+## Details of pretraining ruGPT3XL
+Model was trained on 512 context length with [deepspeed](https://github.com/microsoft/DeepSpeed) and [megatron](https://github.com/NVIDIA/Megatron-LM) code by [SberDevices](https://sberdevices.ru/) team. After that model was finetuned on 2048 context. Note! Model has sparse attention modules.
+
+Total training time took around 10 days on 256 GPUs. Final perplexity on test set is `11.4`.
+
+🤗HuggingFace model card [link](https://huggingface.co/sberbank-ai/rugpt3xl).
+
+See more details [here](gw/)
+
 ## Details of pretraining ruGPT3Large
 Model was trained on 1024 context length with transformers by [SberDevices](https://sberdevices.ru/) team on 80B tokens around 3 epochs. After that we finetune this on 2048 context. For load transformers checkpoint use `--load-openai`.
 
@@ -103,6 +118,9 @@ You can obtain this model here [GDrive](https://drive.google.com/file/d/1r65MwU0
 🤗HuggingFace model card [link](https://huggingface.co/sberbank-ai/rugpt2large)
 
 # Usage
+## Usage ruGPT3XL
+See all details [here](gw/)
+
 ## Usage ruGPT3Large
 We've provided 2 scripts that pretrain and generate with ruGPT3Large. Save and load model checkpoints with `--save` and `--load`.
 
