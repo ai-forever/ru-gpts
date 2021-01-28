@@ -1,7 +1,7 @@
 # ruGPT3XL, ruGPT3Large, ruGPT3Medium, ruGPT3Small and ruGPT2Large
 Russian GPT trained with 2048 context length (ruGPT3XL) with sparse attention, Russian GPT trained with 2048 context length (ruGPT3Large), Russian GPT Medium trained with context 2048 (ruGPT3Medium), Russian GPT Small trained with context 2048 (ruGPT3Small) and Russian GPT2 large (ruGPT2Large) trained with 1024 context length.
 
-We suggest you use ruGPT2Large because this model is more stable and tested.
+We suggest you use ruGPT2Large or ruGPT3XL because this model is more stable and tested.
 
 Examples [here](examples/)
 
