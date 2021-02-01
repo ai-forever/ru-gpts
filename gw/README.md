@@ -97,4 +97,4 @@ print(res)
 # ['Кто был президентом США в 2020? \nВ этом году выборы президента Соединенных Штатов Америки пройдут уже через несколько дней. И, как и всегда на протяжении последних лет (а это более чем 20-ти), кандидаты будут бороться за право стать главой государств']
 ```
 
-More examples see [here](examples/ruGPT3XL_generation.ipynb)
+More examples see [here](examples/ruGPT3XL_generation.ipynb) or [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sberbank-ai/ru-gpts/blob/master/examples/ruGPT3XL_generation.ipynb)
