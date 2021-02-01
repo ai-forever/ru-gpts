@@ -17,23 +17,19 @@
 
 import math
 
+import deepspeed
 import torch
 import torch.nn.init as init
 from apex.normalization.fused_layer_norm import FusedLayerNorm as LayerNorm
+from deepspeed.ops.sparse_attention import SparseSelfAttention
 
 from .initialize import get_model_parallel_world_size
 from .layers import ColumnParallelLinear
 from .layers import RowParallelLinear
 from .mappings import gather_from_model_parallel_region
-
-import deepspeed
-
-from .random import checkpoint
-from .random import get_cuda_rng_tracker
-
 from .utils import divide
 from .utils import split_tensor_along_last_dim
-from deepspeed.ops.sparse_attention import SparseSelfAttention
+
 
 class GPT2ParallelSelfAttention(torch.nn.Module):
     """Parallel self-attention layer for GPT2.
@@ -61,6 +57,7 @@ class GPT2ParallelSelfAttention(torch.nn.Module):
         b: batch size
         s: sequence length
     """
+
     def __init__(self, hidden_size, num_attention_heads,
                  attention_dropout_prob, output_dropout_prob,
                  init_method, output_layer_init_method=None,
@@ -80,7 +77,7 @@ class GPT2ParallelSelfAttention(torch.nn.Module):
         self.num_attention_heads_per_partition = divide(num_attention_heads,
                                                         world_size)
         # Strided linear layer.
-        self.query_key_value = ColumnParallelLinear(hidden_size, 3*hidden_size,
+        self.query_key_value = ColumnParallelLinear(hidden_size, 3 * hidden_size,
                                                     stride=3,
                                                     gather_output=False,
                                                     init_method=init_method)
@@ -100,7 +97,6 @@ class GPT2ParallelSelfAttention(torch.nn.Module):
             global get_cuda_rng_tracker, checkpoint
             get_cuda_rng_tracker = deepspeed.checkpointing.get_cuda_rng_tracker
             checkpoint = deepspeed.checkpointing.checkpoint
-
 
     def _transpose_for_scores(self, tensor):
         """Transpose a 3D tensor [b, s, np*hn] into a 4D tensor with
@@ -129,10 +125,10 @@ class GPT2ParallelSelfAttention(torch.nn.Module):
 
         if self.use_deepspeed_sparse:
             context_layer = self.sparse_self_attention(
-               query_layer,
-               key_layer,
-               value_layer,
-               attn_mask=ltor_mask)
+                query_layer,
+                key_layer,
+                value_layer,
+                attn_mask=ltor_mask)
         else:
             # Raw attention scores. [b, np, s, s]
             attention_scores = torch.matmul(query_layer,
@@ -167,11 +163,11 @@ class GPT2ParallelSelfAttention(torch.nn.Module):
         return output
 
 
-@torch.jit.script
 def gelu_impl(x):
-     """OpenAI's gelu implementation."""
-     return 0.5 * x * (1.0 + torch.tanh(0.7978845608028654 * x *
-                                        (1.0 + 0.044715 * x * x)))
+    """OpenAI's gelu implementation."""
+    return 0.5 * x * (1.0 + torch.tanh(0.7978845608028654 * x *
+                                       (1.0 + 0.044715 * x * x)))
+
 
 def gelu(x):
     return gelu_impl(x)
@@ -203,12 +199,12 @@ class GPT2ParallelMLP(torch.nn.Module):
         if output_layer_init_method is None:
             output_layer_init_method = init_method
         # Project to 4h.
-        self.dense_h_to_4h = ColumnParallelLinear(hidden_size, 4*hidden_size,
+        self.dense_h_to_4h = ColumnParallelLinear(hidden_size, 4 * hidden_size,
                                                   gather_output=False,
                                                   init_method=init_method)
         # Project back to h.
         self.dense_4h_to_h = RowParallelLinear(
-            4*hidden_size,
+            4 * hidden_size,
             hidden_size,
             input_is_parallel=True,
             init_method=output_layer_init_method)
@@ -253,6 +249,7 @@ class GPT2ParallelTransformerLayer(torch.nn.Module):
                                   mlp output) initialization. If None,
                                   use `init_method`.
     """
+
     def __init__(self,
                  hidden_size,
                  num_attention_heads,
@@ -313,6 +310,7 @@ class GPT2ParallelTransformerLayer(torch.nn.Module):
 
 def unscaled_init_method(sigma):
     """Init method based on N(0, sigma)."""
+
     def init_(tensor):
         return torch.nn.init.normal_(tensor, mean=0.0, std=sigma)
 
@@ -322,6 +320,7 @@ def unscaled_init_method(sigma):
 def scaled_init_method(sigma, num_layers):
     """Init method based on N(0, sigma/sqrt(2*num_layers)."""
     std = sigma / math.sqrt(2.0 * num_layers)
+
     def init_(tensor):
         return torch.nn.init.normal_(tensor, mean=0.0, std=std)
 
@@ -362,6 +361,7 @@ class GPT2ParallelTransformer(torch.nn.Module):
                                             scaling for the output weights (
                                             output of self attention and mlp).
     """
+
     def __init__(self,
                  num_layers,
                  hidden_size,
@@ -386,13 +386,13 @@ class GPT2ParallelTransformer(torch.nn.Module):
                                                           num_layers)
         if use_deepspeed_sparse and sparse_mode == 'alternating':
             print('Use alternating sparse & dense attention layers')
-            
+
         def get_layer(layer_num, num_layers):
             sparsity_config = use_deepspeed_sparse
             if use_deepspeed_sparse:
-                if sparse_mode == 'alternating' and layer_num % 2: # even layers are dense
+                if sparse_mode == 'alternating' and layer_num % 2:  # even layers are dense
                     sparsity_config = None
-                elif sparse_mode == 'top_bottom' and layer_num >= num_layers // 2: # top levels are dense
+                elif sparse_mode == 'top_bottom' and layer_num >= num_layers // 2:  # top levels are dense
                     sparsity_config = None
             return GPT2ParallelTransformerLayer(
                 hidden_size,
@@ -416,7 +416,6 @@ class GPT2ParallelTransformer(torch.nn.Module):
             get_cuda_rng_tracker = deepspeed.checkpointing.get_cuda_rng_tracker
             checkpoint = deepspeed.checkpointing.checkpoint
 
-
     def forward(self, hidden_states, attention_mask):
 
         def custom(start, end):
@@ -426,6 +425,7 @@ class GPT2ParallelTransformer(torch.nn.Module):
                 for layer in layers_:
                     x_ = layer(x_, inputs[1])
                 return x_
+
             return custom_forward
 
         if self.checkpoint_activations:
@@ -433,7 +433,7 @@ class GPT2ParallelTransformer(torch.nn.Module):
             num_layers = len(self.layers)
             chunk_length = self.checkpoint_num_layers
             while l < num_layers:
-                hidden_states = checkpoint(custom(l, l+chunk_length),
+                hidden_states = checkpoint(custom(l, l + chunk_length),
                                            hidden_states, attention_mask)
                 l += chunk_length
         else:
@@ -471,6 +471,7 @@ class BertParallelSelfAttention(torch.nn.Module):
         b: batch size
         s: sequence length
     """
+
     def __init__(self, hidden_size, num_attention_heads,
                  dropout_prob, output_parallel=False,
                  init_method=init.xavier_normal_):
@@ -488,7 +489,7 @@ class BertParallelSelfAttention(torch.nn.Module):
         self.num_attention_heads_per_partition = divide(num_attention_heads,
                                                         world_size)
         # Strided linear layer.
-        self.query_key_value = ColumnParallelLinear(hidden_size, 3*hidden_size,
+        self.query_key_value = ColumnParallelLinear(hidden_size, 3 * hidden_size,
                                                     stride=3,
                                                     gather_output=False,
                                                     init_method=init_method)
@@ -501,7 +502,6 @@ class BertParallelSelfAttention(torch.nn.Module):
             global get_cuda_rng_tracker, checkpoint
             get_cuda_rng_tracker = deepspeed.checkpointing.get_cuda_rng_tracker
             checkpoint = deepspeed.checkpointing.checkpoint
-
 
     def _transpose_for_scores(self, tensor):
         """Transpose a 3D tensor [b, s, np*hn] into a 4D tensor with
@@ -528,8 +528,8 @@ class BertParallelSelfAttention(torch.nn.Module):
 
         # Raw attention scores. [b, np, s, s]
         norm_factor = math.sqrt(math.sqrt(self.hidden_size_per_attention_head))
-        attention_scores = torch.matmul(query_layer/norm_factor,
-                                        key_layer.transpose(-1, -2)/norm_factor)
+        attention_scores = torch.matmul(query_layer / norm_factor,
+                                        key_layer.transpose(-1, -2) / norm_factor)
         # Apply the attention mask.
         attention_scores += attention_mask
 
@@ -562,6 +562,7 @@ class BertParallelSelfAttention(torch.nn.Module):
 class BertParallelTransformerOutput(torch.nn.Module):
     """The output layer used after self attention and intermediate
     parts of transformer layer."""
+
     def __init__(self, input_size, output_size, dropout_prob,
                  layernorm_epsilon=1.0e-12, input_is_parallel=False,
                  init_method=init.xavier_normal_):
@@ -613,6 +614,7 @@ class BertParallelTransformerLayer(torch.nn.Module):
                      that all biases are initialized to zero and
                      layernorm weight are initialized to one.
     """
+
     def __init__(self,
                  hidden_size,
                  intermediate_size,
