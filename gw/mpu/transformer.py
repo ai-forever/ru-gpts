@@ -143,7 +143,10 @@ class GPT2ParallelSelfAttention(torch.nn.Module):
             attention_probs = torch.nn.Softmax(dim=-1)(attention_scores)
             # This is actually dropping out entire tokens to attend to, which might
             # seem a bit unusual, but is taken from the original Transformer paper.
-            with get_cuda_rng_tracker().fork():
+            if deepspeed.checkpointing.is_configured():
+                with get_cuda_rng_tracker().fork():
+                    attention_probs = self.attention_dropout(attention_probs)
+            else:
                 attention_probs = self.attention_dropout(attention_probs)
 
             # Context layer.
@@ -537,8 +540,8 @@ class BertParallelSelfAttention(torch.nn.Module):
         attention_probs = torch.nn.Softmax(dim=-1)(attention_scores)
         # This is actually dropping out entire tokens to attend to, which might
         # seem a bit unusual, but is taken from the original Transformer paper.
-        with get_cuda_rng_tracker().fork():
-            attention_probs = self.dropout(attention_probs)
+        # with get_cuda_rng_tracker().fork():
+        #     attention_probs = self.dropout(attention_probs)
 
         # Context layer.
         # [b, np, s, hn]
