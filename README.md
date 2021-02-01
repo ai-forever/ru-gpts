@@ -119,7 +119,7 @@ You can obtain this model here [GDrive](https://drive.google.com/file/d/1r65MwU0
 
 # Usage
 ## Usage ruGPT3XL
-See all details [here](gw/)
+See all details [here](gw/) or run example on or [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sberbank-ai/ru-gpts/blob/master/examples/ruGPT3XL_generation.ipynb)
 
 ## Usage ruGPT3Large
 We've provided 2 scripts that pretrain and generate with ruGPT3Large. Save and load model checkpoints with `--save` and `--load`.

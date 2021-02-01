@@ -22,12 +22,11 @@ If you have errors with deepspeed you can install this manually:
 ```bash
 pip install transformers==3.5.1
 pip install natsort
-pip install torch-blocksparse
 pip install ipywidgets
 jupyter nbextension enable --py widgetsnbextension
 
 pip install triton==0.2.3
-/bin/bash gw/install_deepspeed.sh
+DS_BUILD_CPU_ADAM=1 DS_BUILD_SPARSE_ATTN=1 pip install deepspeed==0.3.7
 ```
 
 After that you should check deepspeed installation:
