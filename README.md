@@ -1,13 +1,14 @@
 # ruGPT3-(Small, Medium, Large, XL)
 This repository contains bunch of autoregressive transformer language models trained on a huge dataset of russian language.
 
-Russian GPT-3 models (ruGPT3*) trained with 2048 context length with sparse and dense attention blocks. We also provide Russian GPT-2 large (ruGPT2Large) model trained with 1024 context length.
+Russian GPT-3 models (ruGPT3XL, ruGPT3Large, ruGPT3Medium, ruGPT3Small) trained with 2048 sequence length with sparse and dense attention blocks. We also provide Russian GPT-2 large model (ruGPT2Large) trained with 1024 sequence length.
 
-We suggest you to use ruGPT2Large or ruGPT3XL because this models are well tested and achieve the best perplexity.
+We suggest using ruGPT2Large or ruGPT3XL because this models are well tested and achieve the best perplexity.
 
 Usage examples are described in detail [here](examples/).
 
 **Note: If you couldn't download the checkpoint, try adding it to your google drive following this [issue](https://www.geekrar.com/fix-bypass-google-drive-download-limit-error/)**
+
 
 ## Table of contents
 * Setup
@@ -29,10 +30,10 @@ Usage examples are described in detail [here](examples/).
   * [Usage ruGPT3Small](#Usage-ruGPT3Small)
   * [Usage ruGPT2Large](#Usage-ruGPT2Large)
 
+
 ## Setup
 ### Setup ruGPT3XL
 Details of setup the XL model are described on a separate page [here](gw/).
-
 
 
 ### Setup ruGPT3Large
@@ -59,11 +60,14 @@ pip install torch-blocksparse
 
 Torch-Blocksparse depends on CUDA 10.1 and the [Triton](https://github.com/ptillet/triton) language compiler, which requires llvm-9.
 
+
 ### Setup ruGPT3Medium
 For this model you can use code from Megatron LM in our repo or use transformers interface. Therefore, you should follow the instructions for setup ruGPT2Large or ruGPT3Large.
 
+
 ### Setup ruGPT3Small
 For this model you can use code from microsoft Megatron LM in our repo or use transformers interface. Therefore, you should follow the instructions for setup ruGPT2Large or ruGPT3Large.
+
 
 ### Setup ruGPT2Large
 This model is smaller and was trained with [transformers==v2.8.0](https://github.com/huggingface/transformers/tree/v2.8.0).
@@ -73,11 +77,12 @@ pip install transformers
 ```
 
 ## Pretraining
-All pretraining has been done on Nvidia Tesla V100-SXM3 32 Gb GPUs  on [Christophari Cluster](https://sbercloud.ru/ru/christofari). Following are the details of pretraining for each model.
+All pretraining was done on Nvidia Tesla V100-SXM3 32 Gb GPUs on a [Christofari Cluster](https://sbercloud.ru/ru/christofari). Following are the details of pretraining for each model.
+
 
 ### Pretraining ruGPT3XL
-Model was trained with 512 sequence length using [Deepspeed](https://github.com/microsoft/DeepSpeed) and [Megatron](https://github.com/NVIDIA/Megatron-LM) code by [SberDevices](https://sberdevices.ru/) team, on 80B tokens dataset for 4 epochs. After that model was finetuned 1 epoch with sequence length 2048. 
-*Note! Model has sparse attention blocks.
+Model was trained with 512 sequence length using [Deepspeed](https://github.com/microsoft/DeepSpeed) and [Megatron](https://github.com/NVIDIA/Megatron-LM) code by [SberDevices](https://sberdevices.ru/) team, on 80B tokens dataset for 4 epochs. After that model was finetuned 1 epoch with sequence length 2048.  
+*Note! Model has sparse attention blocks.*
 
 Total training time was around 10 days on 256 GPUs.  
 Final perplexity on test set is `12.05`.
@@ -85,6 +90,7 @@ Final perplexity on test set is `12.05`.
 🤗HuggingFace model card [link](https://huggingface.co/sberbank-ai/rugpt3xl).
 
 See more details [here](gw/).
+
 
 ### Pretraining ruGPT3Large
 Model was trained with sequence length 1024 using transformers lib by [SberDevices](https://sberdevices.ru/) team on 80B tokens for 3 epochs. After that model was finetuned 1 epoch with sequence length 2048. 
@@ -97,6 +103,7 @@ You can obtain this model here [GDrive](https://drive.google.com/file/d/1t4xw-nv
 
 🤗HuggingFace model card [link](https://huggingface.co/sberbank-ai/rugpt3large_based_on_gpt2)
 
+
 ### Pretraining ruGPT3Medium
 Model was trained with sequence length 1024 using transformers lib by [SberDevices](https://sberdevices.ru/) team on 80B tokens for 3 epoch. After that model was finetuned on 2048 context.
 
@@ -107,6 +114,7 @@ You can obtain this model here [GDrive](https://drive.google.com/file/d/1Lb9ILKw
 
 🤗HuggingFace model card [link](https://huggingface.co/sberbank-ai/rugpt3medium_based_on_gpt2)
 
+
 ### Pretraining ruGPT3Small
 Model was trained with sequence length 1024 using transformers by [SberDevices](https://sberdevices.ru/) team on 80B tokens around 3 epoch. After that model was finetuned on 2048 context.
 
@@ -116,6 +124,7 @@ You can obtain this model here [GDrive](https://drive.google.com/file/d/19dyhhay
 
 🤗HuggingFace model card [link](https://huggingface.co/sberbank-ai/rugpt3small_based_on_gpt2)
 
+
 ### Pretraining ruGPT2Large
 Model was trained with sequence length 1024 using transformers by [SberDevices](https://sberdevices.ru/) team on 170Gb data on 64 GPUs 3 weeks.
 
@@ -123,9 +132,11 @@ You can obtain this model here [GDrive](https://drive.google.com/file/d/1r65MwU0
 
 🤗HuggingFace model card [link](https://huggingface.co/sberbank-ai/rugpt2large)
 
+
 ## Usage
 ### Usage ruGPT3XL
 See all the details [here](gw/) or run example in [![Google Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sberbank-ai/ru-gpts/blob/master/examples/ruGPT3XL_generation.ipynb)
+
 
 ### Usage ruGPT3Large
 We provide 2 scripts for pretraining and generation with ruGPT3Large model. Save and load model checkpoints with `--save` and `--load`.
@@ -211,6 +222,7 @@ ruGPT3Large: или автор книги по бизнесу!
 
 Example of generation in [![Googel Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sberbank-ai/ru-gpts/blob/master/examples/ruGPT3_generation_example.ipynb)
 
+
 ### Usage ruGPT3Medium
 You can run megatron script with option `--load-openai` or use transformers interface:
 
@@ -237,6 +249,7 @@ Context: как же джокер ты хитер
 ruGPT: как же джокер ты хитер, в этой игре
  - Я не злодей, просто хотел узнать, можно ли узнать о чём?
 ```
+
 
 ### Usage ruGPT3Small
 You can run megatron script with option `--load-openai` or use transformers interface:
@@ -269,6 +282,7 @@ ruGPT: На словах ты Лев Толстой, а на деле – Тол
 
 Example of finetuning on essays and generation in [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sberbank-ai/ru-gpts/blob/master/examples/Finetune_ruGPT3Small.ipynb)
 
+
 ### Usage ruGPT2Large
 We provide 2 scripts that pretrain and generate with ruGPT2Large from [transformers](https://github.com/huggingface/transformers/tree/v2.8.0) original code.
 
@@ -278,7 +292,7 @@ We can pass to model raw text files.
 ##### Running script
 `bash ./scripts/pretrain_ruGPT2Large.sh`
 
-This script runs single gpu ruGPT3Large pretraining. This script contains command for running on [Christophari](https://sbercloud.ru/ru/christofari):
+This script runs single gpu ruGPT3Large pretraining. This script contains command for running on [Christofari](https://sbercloud.ru/ru/christofari):
 
 ```
 python pretrain_transformers.py \
@@ -302,7 +316,7 @@ tokenizer = AutoTokenizer.from_pretrained("sberbank-ai/rugpt2large")
 model = AutoModel.from_pretrained("sberbank-ai/rugpt2large")
 ```
 
-##### Text Generation
+#### Text Generation
 `bash ./scripts/generate_ruGPT2Large.sh`
 
 Starts an interactive terminal session that generates text either conditionally or unconditionally depending on what the user enters into the prompt.  
