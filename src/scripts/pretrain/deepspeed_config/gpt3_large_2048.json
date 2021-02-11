@@ -1,0 +1,13 @@
+{
+  "train_micro_batch_size_per_gpu": 1,
+  "fp16": {
+    "enabled": false,
+    "loss_scale": 0,
+    "loss_scale_window": 2000,
+    "min_loss_scale": 0.0
+  },
+  "zero_optimization": {
+    "stage": 0,
+    "reduce_bucket_size": 50000000
+  }
+}
