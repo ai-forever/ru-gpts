@@ -1,17 +1,26 @@
 # ruGPT3XL, ruGPT3Large, ruGPT3Medium, ruGPT3Small and ruGPT2Large
-Russian GPT trained with 2048 context length (ruGPT3XL) with sparse attention, Russian GPT trained with 2048 context length (ruGPT3Large), Russian GPT Medium trained with context 2048 (ruGPT3Medium), Russian GPT Small trained with context 2048 (ruGPT3Small) and Russian GPT2 large (ruGPT2Large) trained with 1024 context length.
+This repository contains bunch of autoregressive transformer language models trained on a huge dataset of russian language.
+
+Russian GPT-3 models (ruGPT3XL, ruGPT3Large, ruGPT3Medium, ruGPT3Small) trained with 2048 sequence length with sparse and dense attention blocks. We also provide Russian GPT-2 large model (ruGPT2Large) trained with 1024 sequence length.
 
 We suggest using ruGPT2Large or ruGPT3XL because this models are well tested and achieve the best perplexity.
 
-Examples [here](examples/)
+Usage examples are described in detail [here](examples/).
 
-Table of contents
+## Table of contents
+* Setup and usage
+  * [HuggingFace interface](#HuggingFace-interface)
+  * [Megatron interface](#Megatron-interface)
+* Pretraining details
+  * [Pretraining ruGPT3XL](#Pretraining-ruGPT3XL)
+  * [Pretraining ruGPT3Large](#Pretraining-ruGPT3Large)
+  * [Pretraining ruGPT3Medium](#Pretraining-ruGPT3Medium)
+  * [Pretraining ruGPT3Small](#Pretraining-ruGPT3Small)
+  * [Pretraining ruGPT2Large](#Pretraining-ruGPT2Large)
+* Advanced
+  * [Pretrained scripts](#Pretrained-scripts-(advanced))
 
-# Christofari GPUs
-
-The organizers gave participants the opportunity to get access to Cristofari by SberCloud.
-
-# Setup and usage
+## Setup and usage
 Models can be used for inference or finetuning with two ways: 🤗HuggingFace interface or our code based on this [implementation](https://github.com/microsoft/DeepSpeedExamples/tree/master/Megatron-LM).
 
 For both ways install transformers:
@@ -20,7 +29,7 @@ For both ways install transformers:
 pip install transformers==3.5.0
 ```
 
-## HuggingFace interface
+### HuggingFace interface
 We support 🤗HuggingFace interface only for ruGPT3Large, ruGPT3Medium, ruGPT3Small and ruGPT2Large models. For RuGPT3XL please use code in this repo because RuGPT3XL model was trained with sparse attention.
 
 Here we can obtain examples of [finetuning](examples/Finetune_RuGPTs_with_HF.ipynb) or [generation](examples/Generate_text_with_RuGPTs_HF.ipynb).
@@ -49,11 +58,11 @@ print(generated_text)
 
 For more information about 🤗HuggingFace interface please follow this [documentation](https://huggingface.co/transformers/main_classes/model.html#transformers.generation_utils.GenerationMixin.generate).
 
-#### Data issues
+##### Data issues
 For training pass single txt file.
 
-## Megatron interface
-### Without deepspeed
+### Megatron interface
+#### Without deepspeed
 For using our code for finetuning without deepspeed (not recommended) we should install apex:
 
 ```bash
@@ -70,7 +79,7 @@ Example of finetuning, generating and loading/convert megatron checkpoints [here
 
 **Note!** This way is valid for all RuGPTs models except RuGPT3XL.
 
-### Megatron with deepspeed
+#### Megatron with deepspeed
 For using our code for finetuning with deepspeed (recommended) we should install apex (see previous section) and deepspeed:
 
 ```bash
@@ -101,7 +110,7 @@ USE_DEEPSPEED=1 python -m torch.distributed.launch --nproc_per_node 1 ru-gpts/pr
   --deepspeed_config ru-gpts/src/deepspeed_config/gpt3_small_2048.json
 ```
 
-#### Data issues
+##### Data issues
 We use custom implementation of distributed dataset. For training and evaluating we should specify file `file.list` with list of paths to txt files. All files from `file.list` will be splitted between aviable GPUs. The logic of splitting is described by the following code:
 
 ```python
@@ -115,7 +124,7 @@ For more details please see full code of dataset: `src.dataset_rugpt3.RuGpt3Text
 
 **Note!** This way is valid for all RuGPTs models except RuGPT3XL.
 
-### Megatron with deepspeed and sparsity
+#### Megatron with deepspeed and sparsity
 This section is used mostly for usage of RuGPT3XL model and training models with sparse attention.
 
 ```bash
@@ -129,7 +138,62 @@ Test installation of deepspeed you can with the following command: `ds_report`.
 
 Example of inference of RuGPT3XL [here](examples/ruGPT3XL_generation.ipynb) or [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sberbank-ai/ru-gpts/blob/master/examples/ruGPT3XL_generation.ipynb)
 
-# Advanced
+## Pretraining details
+All pretraining was done on Nvidia Tesla V100-SXM3 32 Gb GPUs on a [Christofari Cluster](https://sbercloud.ru/ru/christofari). Following are the details of pretraining for each model.
+
+
+### Pretraining ruGPT3XL
+Model was trained with 512 sequence length using [Deepspeed](https://github.com/microsoft/DeepSpeed) and [Megatron](https://github.com/NVIDIA/Megatron-LM) code by [SberDevices](https://sberdevices.ru/) team, on 80B tokens dataset for 4 epochs. After that model was finetuned 1 epoch with sequence length 2048.  
+*Note! Model has sparse attention blocks.*
+
+Total training time was around 10 days on 256 GPUs.  
+Final perplexity on test set is `12.05`.
+
+🤗HuggingFace model card [link](https://huggingface.co/sberbank-ai/rugpt3xl).
+
+See more details [here](examples/ruGPT3XL_generation.ipynb) or [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sberbank-ai/ru-gpts/blob/master/examples/ruGPT3XL_generation.ipynb).
+
+
+### Pretraining ruGPT3Large
+Model was trained with sequence length 1024 using transformers lib by [SberDevices](https://sberdevices.ru/) team on 80B tokens for 3 epochs. After that model was finetuned 1 epoch with sequence length 2048. 
+
+Total training time was around 14 days on 128 GPUs for 1024 context and few days on 16 GPUs for 2048 context.  
+Final perplexity on test set is `13.6`.
+
+You can obtain this model here [GDrive](https://drive.google.com/file/d/1t4xw-nvNLQ8kt9FrWW4bPEgCr45M98vu/view?usp=sharing) [Yandex.Disk](https://yadi.sk/d/X7v84O9jrQ8jJg) [GDrive option-2](https://drive.google.com/file/d/1wtc2iBNTcYrqwOzRyEWYWoVBc9xfsbPP/view?usp=sharing) or use transformers with model name `sberbank-ai/rugpt3large_based_on_gpt2` (see [usage](#Usage-ruGPT3Large) for details).
+
+🤗HuggingFace model card [link](https://huggingface.co/sberbank-ai/rugpt3large_based_on_gpt2)
+
+
+### Pretraining ruGPT3Medium
+Model was trained with sequence length 1024 using transformers lib by [SberDevices](https://sberdevices.ru/) team on 80B tokens for 3 epoch. After that model was finetuned on 2048 context.
+
+Total training time was around 16 days on 64 GPUs.  
+Final perplexity on test set is `17.4`.
+
+You can obtain this model by using transformers with model name `sberbank-ai/rugpt3medium_based_on_gpt2`. 
+
+🤗HuggingFace model card [link](https://huggingface.co/sberbank-ai/rugpt3medium_based_on_gpt2)
+
+
+### Pretraining ruGPT3Small
+Model was trained with sequence length 1024 using transformers by [SberDevices](https://sberdevices.ru/) team on 80B tokens around 3 epoch. After that model was finetuned on 2048 context.
+
+Total training time took around one week on 32 GPUs.
+
+You can obtain this model by using transformers with model name `sberbank-ai/rugpt3small_based_on_gpt2`. 
+
+🤗HuggingFace model card [link](https://huggingface.co/sberbank-ai/rugpt3small_based_on_gpt2)
+
+
+### Pretraining ruGPT2Large
+Model was trained with sequence length 1024 using transformers by [SberDevices](https://sberdevices.ru/) team on 170Gb data on 64 GPUs 3 weeks.
+
+You can obtain this model by using transformers with model name `sberbank-ai/rugpt2large`.
+
+🤗HuggingFace model card [link](https://huggingface.co/sberbank-ai/rugpt2large)
+
+## Pretrained scripts (advanced)
 Also we add pretraining scripts for all models (except RuGPT2Large). See [scripts](scripts/) dir.
 
 **Note!** All training params (such as lr, wd, ...) may was different while real training. This is just for example.
