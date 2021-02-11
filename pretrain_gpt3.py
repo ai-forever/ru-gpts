@@ -56,7 +56,7 @@ def get_model(args):
     assert args.num_attention_heads % args.model_parallel_size == 0
     num_local_heads = args.num_attention_heads // args.model_parallel_size
     deepspeed_sparsity_config = None
-    if args.deepspeed:
+    if DEEPSPEED_WRAP and args.deepspeed:
         deepspeed_sparsity_config = get_sparse_attention_config(args, num_local_heads)
     if deepspeed_sparsity_config is not None:
         print_rank_0(f"Use sparse attention with mode {args.sparse_mode}")
@@ -83,7 +83,7 @@ def get_model(args):
             sum([p.nelement() for p in model.parameters()])), flush=True)
 
     # To prevent OOM for model sizes that cannot fit in GPU memory in full precision
-    if args.deepspeed and args.fp16:
+    if DEEPSPEED_WRAP and args.deepspeed and args.fp16:
         model.half()
 
     # GPU allocation.
@@ -132,7 +132,7 @@ def get_optimizer(model, args):
                          lr=args.lr, weight_decay=args.weight_decay)
 
     print(f'Optimizer = {optimizer.__class__.__name__}')
-    if args.deepspeed:
+    if DEEPSPEED_WRAP and args.deepspeed:
         # fp16 wrapper is not required for DeepSpeed.
         return optimizer
 
@@ -178,7 +178,7 @@ def setup_model_and_optimizer(args):
     optimizer = get_optimizer(model, args)
     lr_scheduler = get_learning_rate_scheduler(optimizer, args)
 
-    if args.deepspeed:
+    if DEEPSPEED_WRAP and args.deepspeed:
         print_rank_0("DeepSpeed is enabled.")
 
         model, optimizer, _, lr_scheduler = DEEPSPEED_WRAP.deepspeed.initialize(
@@ -192,7 +192,7 @@ def setup_model_and_optimizer(args):
 
     if args.load is not None:
         print_rank_0("Load checkpoint from " + args.load)
-        args.iteration = load_checkpoint(model, optimizer, lr_scheduler, args, deepspeed=args.deepspeed)
+        args.iteration = load_checkpoint(model, optimizer, lr_scheduler, args, deepspeed=DEEPSPEED_WRAP and args.deepspeed)
         print_rank_0("Checkpoint loaded")
     else:
         args.iteration = 0
@@ -335,7 +335,7 @@ def backward_step(optimizer, model, lm_loss, args, timers):
     loss = lm_loss
 
     # Backward pass.
-    if args.deepspeed:
+    if DEEPSPEED_WRAP and args.deepspeed:
         model.backward(loss)
     else:
         optimizer.zero_grad()
@@ -349,7 +349,7 @@ def backward_step(optimizer, model, lm_loss, args, timers):
 
     reduced_losses = lm_loss.view(1)
 
-    if args.deepspeed:
+    if DEEPSPEED_WRAP and args.deepspeed:
         # DeepSpeed backward propagation already addressed all reduce communication.
         # Reset the timer to avoid breaking timer logs below.
         timers('allreduce').reset()
@@ -365,7 +365,7 @@ def backward_step(optimizer, model, lm_loss, args, timers):
     lm_loss_reduced = reduced_losses
 
     # Update master gradients.
-    if not args.deepspeed:
+    if not (DEEPSPEED_WRAP and args.deepspeed):
         if args.fp16:
             optimizer.update_master_grads()
 
@@ -416,7 +416,7 @@ def train_step(sample, model, optimizer, lr_scheduler,
     # Update parameters.
     skipped_iter = 0
     timers('optimizer').start()
-    if args.deepspeed:
+    if DEEPSPEED_WRAP and args.deepspeed:
         model.step()
     else:
         optimizer.step()
@@ -499,7 +499,7 @@ def train(model, optimizer, lr_scheduler,
                 'Speed/seen_tokens': iteration * (tokens / args.log_interval)
             }
             if args.fp16:
-                lscale = optimizer.cur_scale if args.deepspeed else optimizer.loss_scale
+                lscale = optimizer.cur_scale if DEEPSPEED_WRAP and args.deepspeed else optimizer.loss_scale
                 log_string += ' loss scale {:.1f} |'.format(lscale)
                 scalars['lscale'] = lscale
             print_rank_0(log_string)
@@ -528,7 +528,7 @@ def train(model, optimizer, lr_scheduler,
                            normalizer=args.log_interval)
         # Checkpointing
         if args.save and args.save_interval and iteration % args.save_interval == 0:
-            save_checkpoint(iteration, model, optimizer, lr_scheduler, args, deepspeed=args.deepspeed)
+            save_checkpoint(iteration, model, optimizer, lr_scheduler, args, deepspeed=DEEPSPEED_WRAP and args.deepspeed)
 
         # Evaluation
         if args.eval_interval and iteration % args.eval_interval == 0 and args.do_valid:
@@ -575,7 +575,7 @@ def evaluate(data_iterator, model, args, timers, verbose=False):
             allocated by the optimizations are deallocated during backward pass
             in the absence of backward pass the buffers should be reset after each
             forward pass'''
-            if args.deepspeed and args.deepspeed_activation_checkpointing:
+            if DEEPSPEED_WRAP and args.deepspeed and args.deepspeed_activation_checkpointing:
                 DEEPSPEED_WRAP.deepspeed.checkpointing.reset()
 
             # Reduce across processes.
@@ -657,7 +657,7 @@ def initialize_distributed(args):
 
     # Optional DeepSpeed Activation Checkpointing Features
     #
-    if args.deepspeed and args.deepspeed_activation_checkpointing:
+    if DEEPSPEED_WRAP and args.deepspeed and args.deepspeed_activation_checkpointing:
         set_deepspeed_activation_checkpointing(args)
 
 
@@ -816,7 +816,7 @@ def main():
                                            model, args, timers, False)
 
     if args.save and iteration != 0:
-        save_checkpoint(iteration, model, optimizer, lr_scheduler, args, deepspeed=args.deepspeed)
+        save_checkpoint(iteration, model, optimizer, lr_scheduler, args, deepspeed=DEEPSPEED_WRAP and args.deepspeed)
 
     if args.do_test:
         # Run on test data.

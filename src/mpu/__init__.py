@@ -48,4 +48,4 @@ from .random import get_cuda_rng_tracker
 from .random import model_parallel_cuda_manual_seed
 
 from .transformer import GPT3ParallelTransformer
-# from .transformer import LayerNorm
+from .transformer import LayerNorm
