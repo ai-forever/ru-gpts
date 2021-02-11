@@ -291,22 +291,9 @@ def add_data_args(parser):
                             'each document consists of newline separated sentences')
     group.add_argument('--num-workers', type=int, default=2,
                        help="""Number of workers to use for dataloading""")
-    group.add_argument('--tokenizer-model-type', type=str,
-                       default='bert-large-uncased',
-                       help="Model type to use for sentencepiece tokenization \
-                       (one of ['bpe', 'char', 'unigram', 'word']) or \
-                       bert vocab to use for BertWordPieceTokenizer (one of \
-                       ['bert-large-uncased', 'bert-large-cased', etc.])")
     group.add_argument('--tokenizer-path', type=str, default=None,
                        help='path used to save/load sentencepiece tokenization '
                             'models')
-    group.add_argument('--tokenizer-type', type=str,
-                       default='BertWordPieceTokenizer',
-                       choices=['CharacterLevelTokenizer',
-                                'SentencePieceTokenizer',
-                                'BertWordPieceTokenizer',
-                                'GPT2BPETokenizer'],
-                       help='what type of tokenizer to use')
     group.add_argument("--cache-dir", default=None, type=str,
                        help="Where to store pre-trained BERT downloads")
     group.add_argument('--use-tfrecords', action='store_true',

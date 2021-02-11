@@ -5,30 +5,69 @@ We suggest you use ruGPT2Large or ruGPT3XL because this model is more stable and
 
 Examples [here](examples/)
 
-**Note: If you cannot download the checkpoint, try adding it to your google drive following this [issue](https://www.geekrar.com/fix-bypass-google-drive-download-limit-error/)**
-
 Table of contents
-* [Setup ruGPT3XL](#Setup-ruGPT3XL)
-* [Setup ruGPT3Large](#Setup-ruGPT3Large)
-* [Setup ruGPT3Medium](#Setup-ruGPT3Medium)
-* [Setup ruGPT3Small](#Setup-ruGPT3Small)
-* [Setup ruGPT2Large](#Setup-ruGPT2Large)
-* [Details of pretraining ruGPT3XL](#Details-of-pretraining-ruGPT3XL)
-* [Details of pretraining ruGPT3Large](#Details-of-pretraining-ruGPT3Large)
-* [Details of pretraining ruGPT3Medium](#Details-of-pretraining-ruGPT3Medium)
-* [Details of pretraining ruGPT3Small](#Details-of-pretraining-ruGPT3Small)
-* [Details of pretraining ruGPT2Large](#Details-of-pretraining-ruGPT2Large)
-* [Usage ruGPT3XL](#Usage-ruGPT3XL)
-* [Usage ruGPT3Large](#Usage-ruGPT3Large)
-* [Usage ruGPT3Medium](#Usage-ruGPT3Medium)
-* [Usage ruGPT3Small](#Usage-ruGPT3Small)
-* [Usage ruGPT2Large](#Usage-ruGPT2Large)
 
 # Christofari GPUs
 
-The organizers gave participants the opportunity to get access to Cristofari by SberCloud. To get access, please send to AIJ_ruGPT-3@sberbank.ru your request with brief information about your project. We will review your request and get back to you. Please note that the number of such accesses is limited - 100 accounts available. If necessary, please leave your request as early as possible.
+The organizers gave participants the opportunity to get access to Cristofari by SberCloud.
 
-# Setup
+# Setup and usage
+Models can be used for inference or finetuning with two ways: 🤗HuggingFace interface or our code based on this [implementation](https://github.com/microsoft/DeepSpeedExamples/tree/master/Megatron-LM).
+
+For both ways install transformers:
+
+```bash
+pip install transformers==3.5.0
+```
+
+## HuggingFace interface
+We support 🤗HuggingFace interface only for ruGPT3Large, ruGPT3Medium, ruGPT3Small and ruGPT2Large models. For RuGPT3XL please use code in this repo because RuGPT3XL model was trained with sparse attention.
+
+Here we can obtain examples of [finetuning](examples/Finetune_RuGPTs_with_HF.ipynb) or [generation](examples/Generate_text_with_RuGPTs_HF.ipynb).
+
+Also this examples is adapted for google colab:
+* [![finetuning](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sberbank-ai/ru-gpts/blob/master/examples/Finetune_RuGPTs_with_HF.ipynb)
+* [![generation](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sberbank-ai/ru-gpts/blob/master/examples/Generate_text_with_RuGPTs_HF.ipynb)
+
+Basic usage:
+
+```python
+from transformers import GPT2LMHeadModel, GPT2Tokenizer
+
+
+model_name_or_path = "sberbank-ai/rugpt3large_based_on_gpt2"
+tokenizer = GPT2Tokenizer.from_pretrained(model_name_or_path)
+model = GPT2LMHeadModel.from_pretrained(model_name_or_path).cuda()
+text = "Александр Сергеевич Пушкин родился в "
+input_ids = tokenizer.encode(text, return_tensors="pt").cuda()
+out = model.generate(input_ids.cuda())
+generated_text = list(map(tokenizer.decode, out))[0]
+print(generated_text)
+# Output should be like this:
+# Александр Сергеевич Пушкин родился в \n1799 году. Его отец был крепостным крестьянином, а мать – крепостной крестьянкой. Детство и юность Пушкина прошли в деревне Михайловское под Петербургом. В 1820-х годах семья переехала
+```
+
+For more information about 🤗HuggingFace interface please follow this [documentation](https://huggingface.co/transformers/main_classes/model.html#transformers.generation_utils.GenerationMixin.generate).
+
+## Megatron interface
+For using our code for finetuning without deepspeed (not recommended) we should install apex:
+
+```bash
+%%writefile setup.sh
+
+export CUDA_HOME=/usr/local/cuda-10.1
+git clone https://github.com/NVIDIA/apex
+pip install -v --no-cache-dir --global-option="--cpp_ext" --global-option="--cuda_ext" ./apex
+
+sh setup.sh
+```
+
+Example of finetuning, generating and loading megatron checkpoints [here](Finetune_and_generate_RuGPTs_only_with_megatron.ipynb) or [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sberbank-ai/ru-gpts/blob/master/examples/Finetune_and_generate_RuGPTs_only_with_megatron.ipynb)
+
+
+Note! This way is valid for all RuGPTs models except RuGPT3XL.
+
+
 ## Setup ruGPT3XL
 See all details [here](gw/)
 

@@ -31,7 +31,7 @@ from pretrain_gpt3 import initialize_distributed
 from pretrain_gpt3 import set_random_seed
 from src.utils import Timers
 from src.utils import export_to_huggingface_model
-from src.utils import print_rank_0
+from src.utils import print_rank_0, load_checkpoint, DEEPSPEED_WRAP
 
 
 def get_model(args):
@@ -74,8 +74,7 @@ def setup_model(args):
     model = get_model(args)
 
     print("Load checkpoint from " + args.load)
-    checkpoint = torch.load(args.load, map_location=lambda storage, loc: storage)['module']
-    model.load_state_dict(checkpoint)
+    _ = load_checkpoint(model, None, None, args, deepspeed=DEEPSPEED_WRAP and args.deepspeed)
     model.eval()
     print("Loaded")
     if args.export_huggingface is not None:
