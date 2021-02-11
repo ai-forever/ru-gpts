@@ -1,7 +1,7 @@
 # ruGPT3XL, ruGPT3Large, ruGPT3Medium, ruGPT3Small and ruGPT2Large
 Russian GPT trained with 2048 context length (ruGPT3XL) with sparse attention, Russian GPT trained with 2048 context length (ruGPT3Large), Russian GPT Medium trained with context 2048 (ruGPT3Medium), Russian GPT Small trained with context 2048 (ruGPT3Small) and Russian GPT2 large (ruGPT2Large) trained with 1024 context length.
 
-We suggest you use ruGPT2Large or ruGPT3XL because this model is more stable and tested.
+We suggest using ruGPT2Large or ruGPT3XL because this models are well tested and achieve the best perplexity.
 
 Examples [here](examples/)
 
@@ -115,50 +115,19 @@ For more details please see full code of dataset: `src.dataset_rugpt3.RuGpt3Text
 
 **Note!** This way is valid for all RuGPTs models except RuGPT3XL.
 
-
-
-
-
-
-## Setup ruGPT3XL
-See all details [here](gw/)
-
-## Setup ruGPT3Large
-Code reused from microsoft [implementation](https://github.com/microsoft/DeepSpeedExamples/tree/master/Megatron-LM) of Megatron-LM.
-Supports only python3.6.
-
-To use this repo please install the latest supported versions of PyTorch with GPU support. 
-
-Additionally, part of this codebase leverages tensorflow-cpu to (optionally) perform dataloading of TFRecords for GPT training. We recommend creating a virtual environment (to avoid breaking existing tf installations) and install our `requirements.txt`. 
+### Megatron with deepspeed and sparsity
+This section is used mostly for usage of RuGPT3XL model and training models with sparse attention.
 
 ```bash
-python -m pip install virtualenv
-virtualenv gpt_env
-source gpt_env/bin/activate
-pip install -r requirements.txt
+apt-get install llvm-9-dev
+pip install cpufeature
+pip install triton==0.2.3
+DS_BUILD_CPU_ADAM=1 DS_BUILD_SPARSE_ATTN=1 pip install deepspeed==0.3.7
 ```
 
-For using of sparse operations in attention additionally install [torch-blocksparse](https://github.com/ptillet/torch-blocksparse):
+Test installation of deepspeed you can with the following command: `ds_report`.
 
-```bash
-source gpt_env/bin/activate
-pip install torch-blocksparse
-```
-
-Torch-Blocksparse depends on CUDA 10.1 and the [Triton](https://github.com/ptillet/triton) language and compiler, which requires llvm-9.
-
-## Setup ruGPT3Medium
-For this model you can use code from microsoft [implementation](https://github.com/microsoft/DeepSpeedExamples/tree/master/Megatron-LM) of Megatron-LM in our repo or use transformers interface. Therefore, you should follow the instructions for ruGPT2Large or ruGPT3Large for installation.
-
-## Setup ruGPT3Small
-For this model you can use code from microsoft [implementation](https://github.com/microsoft/DeepSpeedExamples/tree/master/Megatron-LM) of Megatron-LM in our repo or use transformers interface. Therefore, you should follow the instructions for ruGPT2Large or ruGPT3Large for installation.
-
-## Setup ruGPT2Large
-This model is smaller and was trained with [transformers==v2.8.0](https://github.com/huggingface/transformers/tree/v2.8.0).
-For installing use command:
-```bash
-pip install transformers
-```
+Example of inference of RuGPT3XL [here](examples/ruGPT3XL_generation.ipynb) or [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sberbank-ai/ru-gpts/blob/master/examples/ruGPT3XL_generation.ipynb)
 
 # Details of pretraining
 All GPUs are  Tesla V100-SXM3 32 Gb.
