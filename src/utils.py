@@ -33,8 +33,8 @@ class DeepSpeedImportWrap(object):
         self.use_ds = os.environ.get("USE_DEEPSPEED", False)
         self.deepspeed = None
         if self.use_ds:
-            import functools
-            self.deepspeed = functools
+            import deepspeed
+            self.deepspeed = deepspeed
 
     def __bool__(self):
         return bool(self.use_ds)
@@ -255,7 +255,7 @@ def save_ds_checkpoint(iteration, model, args):
         sd['cuda_rng_state'] = torch.cuda.get_rng_state()
         sd['rng_tracker_states'] = mpu.get_cuda_rng_tracker().get_states()
 
-    model.save_checkpoint(args.save, iteration, client_state=sd)
+    model.save_checkpoint(args.save, str(iteration), client_state=sd)
 
 
 def get_checkpoints(load_dir):

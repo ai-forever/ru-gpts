@@ -1,7 +1,4 @@
 #! /bin/bash
-
-# Model parallel size
-MP_SIZE=1
 # Change for multinode config
 NUM_GPUS_PER_WORKER=1
 
@@ -13,8 +10,8 @@ gpt_options=" \
        --train-data-path /home/jovyan/data/gpt3test/essays/train.list \
        --test-data-path /home/jovyan/data/gpt3test/essays/valid.list \
        --max-files-per-process 100 \
-       --logging-dir=/home/jovyan/models/essays/log2 \
-       --save /home/jovyan/models/essays/model2 \
+       --logging-dir=/home/jovyan/models/essays/log3 \
+       --save /home/jovyan/models/essays/model3 \
        --load-huggingface sberbank-ai/rugpt3small_based_on_gpt2
        --save-interval 1000 \
        --no-load-optim \
@@ -33,10 +30,14 @@ gpt_options=" \
        --warmup 0.0 \
        --lr-decay-style constant \
        --weight-decay 1e-2 \
-       --fp16
+       --fp16 \
+       --checkpoint-activations \
+       --deepspeed-activation-checkpointing \
+       --deepspeed \
+       --deepspeed_config /home/jovyan/devices/ru-gpts/src/deepspeed_config/gpt3_small_2048.json \
 "
 
-run_cmd="CUDA_VISIBLE_DEVICES=1 python -m torch.distributed.launch --nproc_per_node $NUM_GPUS_PER_WORKER /home/jovyan/devices/ru-gpts/pretrain_gpt3.py $@ ${gpt_options}"
+run_cmd="USE_DEEPSPEED=1 python -m torch.distributed.launch --nproc_per_node $NUM_GPUS_PER_WORKER /home/jovyan/devices/ru-gpts/pretrain_gpt3.py $@ ${gpt_options}"
 echo ${run_cmd}
 eval ${run_cmd}
 
