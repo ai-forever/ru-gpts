@@ -72,6 +72,17 @@ def setup_model(args):
     """Setup model and optimizer."""
 
     model = get_model(args)
+    if DEEPSPEED_WRAP and args.deepspeed:
+        print_rank_0("DeepSpeed is enabled.")
+
+        model, optimizer, _, lr_scheduler = DEEPSPEED_WRAP.deepspeed.initialize(
+            model=model,
+            optimizer=None,
+            args=args,
+            lr_scheduler=None,
+            mpu=mpu,
+            dist_init_required=False
+        )
 
     print("Load checkpoint from " + args.load)
     _ = load_checkpoint(model, None, None, args, deepspeed=DEEPSPEED_WRAP and args.deepspeed)
