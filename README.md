@@ -62,8 +62,7 @@ pip install -v --no-cache-dir --global-option="--cpp_ext" --global-option="--cud
 sh setup.sh
 ```
 
-Example of finetuning, generating and loading megatron checkpoints [here](Finetune_and_generate_RuGPTs_only_with_megatron.ipynb) or [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sberbank-ai/ru-gpts/blob/master/examples/Finetune_and_generate_RuGPTs_only_with_megatron.ipynb)
-
+Example of finetuning, generating and loading/convert megatron checkpoints [here](examples/Finetune_and_generate_RuGPTs_only_with_megatron.ipynb) or [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sberbank-ai/ru-gpts/blob/master/examples/Finetune_and_generate_RuGPTs_only_with_megatron.ipynb)
 
 Note! This way is valid for all RuGPTs models except RuGPT3XL.
 
