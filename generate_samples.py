@@ -26,9 +26,9 @@ from src.arguments import get_args
 from src.fp16 import FP16_Module
 from src.model import DistributedDataParallel as DDP
 from src.model import GPT3Model
-from .pretrain_gpt3 import generate
-from .pretrain_gpt3 import initialize_distributed
-from .pretrain_gpt3 import set_random_seed
+from pretrain_gpt3 import generate
+from pretrain_gpt3 import initialize_distributed
+from pretrain_gpt3 import set_random_seed
 from src.utils import Timers
 from src.utils import export_to_huggingface_model
 from src.utils import print_rank_0
