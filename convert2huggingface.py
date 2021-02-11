@@ -16,18 +16,13 @@
 """Sample Generate GPT3"""
 
 import torch
-from transformers.tokenization_gpt2 import GPT2Tokenizer
 
-from generate_samples import setup_model
+from generate_samples import setup_model, prepare_tokenizer
 from pretrain_gpt3 import initialize_distributed
 from src.arguments import get_args
 
 
 def main():
-    """Main training program."""
-
-    print('Generate Samples')
-
     # Disable CuDNN.
     torch.backends.cudnn.enabled = False
 
@@ -38,7 +33,7 @@ def main():
     initialize_distributed(args)
 
     # get the tokenizer
-    tokenizer = GPT2Tokenizer.from_pretrained(args.tokenizer_path)
+    tokenizer = prepare_tokenizer(args)
     tokenizer.save_pretrained(args.export_huggingface)
 
     # Model
