@@ -57,7 +57,7 @@ print(generated_text)
 # Александр Сергеевич Пушкин родился в \n1799 году. Его отец был крепостным крестьянином, а мать – крепостной крестьянкой. Детство и юность Пушкина прошли в деревне Михайловское под Петербургом. В 1820-х годах семья переехала
 ```
 
-For more information about 🤗HuggingFace interface please follow this [documentation](https://huggingface.co/transformers/main_classes/model.html#transformers.generation_utils.GenerationMixin.generate).
+For more information about 🤗HuggingFace interface please follow this [documentation](https://HuggingFace.co/transformers/main_classes/model.html#transformers.generation_utils.GenerationMixin.generate).
 
 ##### Data issues
 For training pass single txt file.
@@ -154,7 +154,7 @@ Model was trained with 512 sequence length using [Deepspeed](https://github.com/
 Total training time was around 10 days on 256 GPUs.  
 Final perplexity on test set is `12.05`.
 
-🤗HuggingFace model card [link](https://huggingface.co/sberbank-ai/rugpt3xl).
+🤗HuggingFace model card [link](https://HuggingFace.co/sberbank-ai/rugpt3xl).
 
 See more details [here](examples/ruGPT3XL_generation.ipynb) or [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sberbank-ai/ru-gpts/blob/master/examples/ruGPT3XL_generation.ipynb).
 
@@ -167,7 +167,7 @@ Final perplexity on test set is `13.6`.
 
 You can obtain this model here [GDrive](https://drive.google.com/file/d/1t4xw-nvNLQ8kt9FrWW4bPEgCr45M98vu/view?usp=sharing) [Yandex.Disk](https://yadi.sk/d/X7v84O9jrQ8jJg) [GDrive option-2](https://drive.google.com/file/d/1wtc2iBNTcYrqwOzRyEWYWoVBc9xfsbPP/view?usp=sharing) or use transformers with model name `sberbank-ai/rugpt3large_based_on_gpt2` (see [usage](#Usage-ruGPT3Large) for details).
 
-🤗HuggingFace model card [link](https://huggingface.co/sberbank-ai/rugpt3large_based_on_gpt2)
+🤗HuggingFace model card [link](https://HuggingFace.co/sberbank-ai/rugpt3large_based_on_gpt2)
 
 
 ### Pretraining ruGPT3Medium
@@ -178,7 +178,7 @@ Final perplexity on test set is `17.4`.
 
 You can obtain this model by using transformers with model name `sberbank-ai/rugpt3medium_based_on_gpt2`. 
 
-🤗HuggingFace model card [link](https://huggingface.co/sberbank-ai/rugpt3medium_based_on_gpt2)
+🤗HuggingFace model card [link](https://HuggingFace.co/sberbank-ai/rugpt3medium_based_on_gpt2)
 
 
 ### Pretraining ruGPT3Small
@@ -188,7 +188,7 @@ Total training time took around one week on 32 GPUs.
 
 You can obtain this model by using transformers with model name `sberbank-ai/rugpt3small_based_on_gpt2`. 
 
-🤗HuggingFace model card [link](https://huggingface.co/sberbank-ai/rugpt3small_based_on_gpt2)
+🤗HuggingFace model card [link](https://HuggingFace.co/sberbank-ai/rugpt3small_based_on_gpt2)
 
 
 ### Pretraining ruGPT2Large
@@ -196,7 +196,7 @@ Model was trained with sequence length 1024 using transformers by [SberDevices](
 
 You can obtain this model by using transformers with model name `sberbank-ai/rugpt2large`.
 
-🤗HuggingFace model card [link](https://huggingface.co/sberbank-ai/rugpt2large)
+🤗HuggingFace model card [link](https://HuggingFace.co/sberbank-ai/rugpt2large)
 
 ## Advanced
 ### Pretrained scripts (advanced)
@@ -205,7 +205,7 @@ Also we add pretraining scripts for all models (except RuGPT2Large). See [script
 **Note!** All training params (such as lr, wd, ...) may was different while real training. This is just for example.
 
 ### Convert checkpoint to HuggingFace
-For converting megatron checkpoint to huggingface format use the following script (example for RuGPT3Small):
+For converting megatron checkpoint to HuggingFace format use the following script (example for RuGPT3Small):
 
 ```bash
 python convert2huggingface.py \
@@ -217,5 +217,12 @@ python convert2huggingface.py \
   --max-position-embeddings 2048 \
   --tokenizer-path sberbank-ai/rugpt3small_based_on_gpt2 \
   --no-load-optim \
-  --export-huggingface model_hf
+  --export-huggingface /path/to/converted/checkpoint
+```
+
+After converting we can use HuggingFace model:
+
+```python
+from transformers import GPT2LMHeadModel
+model = GPT2LMHeadModel.from_pretrained("/path/to/converted/checkpoint")
 ```
