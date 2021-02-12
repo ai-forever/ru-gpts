@@ -19,6 +19,7 @@ Usage examples are described in detail [here](examples/).
   * [Pretraining ruGPT2Large](#Pretraining-ruGPT2Large)
 * Advanced
   * [Pretrained scripts](#Pretrained-scripts-(advanced))
+  * [Convert checkpoint to HuggingFace](#Convert-checkpoint-to-HuggingFace)
 
 ## Setup and usage
 Models can be used for inference or finetuning with two ways: 🤗HuggingFace interface or our code based on this [implementation](https://github.com/microsoft/DeepSpeedExamples/tree/master/Megatron-LM).
@@ -197,7 +198,24 @@ You can obtain this model by using transformers with model name `sberbank-ai/rug
 
 🤗HuggingFace model card [link](https://huggingface.co/sberbank-ai/rugpt2large)
 
-## Pretrained scripts (advanced)
+## Advanced
+### Pretrained scripts (advanced)
 Also we add pretraining scripts for all models (except RuGPT2Large). See [scripts](scripts/) dir.
 
 **Note!** All training params (such as lr, wd, ...) may was different while real training. This is just for example.
+
+### Convert checkpoint to HuggingFace
+For converting megatron checkpoint to huggingface format use the following script (example for RuGPT3Small):
+
+```bash
+python convert2huggingface.py \
+  --load /path/to/save/dir/ \
+  --model-parallel-size 1 \
+  --num-layers 12 \
+  --hidden-size 768 \
+  --num-attention-heads 12 \
+  --max-position-embeddings 2048 \
+  --tokenizer-path sberbank-ai/rugpt3small_based_on_gpt2 \
+  --no-load-optim \
+  --export-huggingface model_hf
+```
