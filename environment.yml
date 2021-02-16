@@ -5,12 +5,12 @@ channels:
   - defaults
 dependencies:
   - ipykernel
-  - python>=3.6,<3.7
+  - python>=3.6
   - pip
-  - pytorch>=1.3
-  - cuda100 
-  - cudatoolkit
-  - cudatoolkit-dev
+  - pytorch>=1.7.1
+#  - cuda100 
+#  - cudatoolkit>=11.2
+#  - cudatoolkit-dev
   - tensorboard
 #  - nvidia-apex
   - pip:
@@ -18,11 +18,11 @@ dependencies:
     - numpy>=1.15.4
     - pandas>=0.24.0
     - sentencepiece>=0.1.8
-    - tensorflow>=1.12.0
+#    - tensorflow>=1.12.0
     - boto3==1.11.11
     - regex==2020.1.8
-    - transformers==2.8.0
-    - tensorflow-cpu
+    - transformers==3.5.1
+#    - tensorflow-cpu
     - fastai>=2
     - tendo
     - fastapi
