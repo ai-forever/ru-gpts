@@ -157,8 +157,8 @@ Final perplexity on test set is `12.05`.
 🤗HuggingFace model card [link](https://HuggingFace.co/sberbank-ai/rugpt3xl).
 
 See more details for generation [here](examples/ruGPT3XL_generation.ipynb) or [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sberbank-ai/ru-gpts/blob/master/examples/ruGPT3XL_generation.ipynb).
-Pretrain script [here](scripts/deepspeed_gpt3_xl.sh)
 
+Our pretraining script [here](scripts/deepspeed_gpt3_xl.sh)
 
 ### Pretraining ruGPT3Large
 Model was trained with sequence length 1024 using transformers lib by [SberDevices](https://sberdevices.ru/) team on 80B tokens for 3 epochs. After that model was finetuned 1 epoch with sequence length 2048. 
@@ -170,6 +170,7 @@ You can obtain this model by using transformers with model name `sberbank-ai/rug
 
 🤗HuggingFace model card [link](https://HuggingFace.co/sberbank-ai/rugpt3large_based_on_gpt2)
 
+Our pretraining script [here](scripts/deepspeed_gpt3_large.sh)
 
 ### Pretraining ruGPT3Medium
 Model was trained with sequence length 1024 using transformers lib by [SberDevices](https://sberdevices.ru/) team on 80B tokens for 3 epoch. After that model was finetuned on 2048 context.
@@ -181,6 +182,7 @@ You can obtain this model by using transformers with model name `sberbank-ai/rug
 
 🤗HuggingFace model card [link](https://HuggingFace.co/sberbank-ai/rugpt3medium_based_on_gpt2)
 
+Our pretraining script [here](scripts/deepspeed_gpt3_medium.sh)
 
 ### Pretraining ruGPT3Small
 Model was trained with sequence length 1024 using transformers by [SberDevices](https://sberdevices.ru/) team on 80B tokens around 3 epoch. After that model was finetuned on 2048 context.
@@ -191,6 +193,7 @@ You can obtain this model by using transformers with model name `sberbank-ai/rug
 
 🤗HuggingFace model card [link](https://HuggingFace.co/sberbank-ai/rugpt3small_based_on_gpt2)
 
+Our pretraining script [here](scripts/deepspeed_gpt3_small.sh)
 
 ### Pretraining ruGPT2Large
 Model was trained with sequence length 1024 using transformers by [SberDevices](https://sberdevices.ru/) team on 170Gb data on 64 GPUs 3 weeks.
