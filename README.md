@@ -7,6 +7,8 @@ We suggest using ruGPT2Large or ruGPT3XL because this models are well tested and
 
 Usage examples are described in detail [here](examples/).
 
+Old version of code you can find [here](https://github.com/sberbank-ai/ru-gpts/tree/old)
+
 ## Table of contents
 * Setup and usage
   * [HuggingFace interface](#HuggingFace-interface)
