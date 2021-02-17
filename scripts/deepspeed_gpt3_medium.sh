@@ -39,7 +39,7 @@ gpt_options=" \
        --deepspeed_config src/deepspeed_config/gpt3_medium_2048.json \
 "
 
-run_cmd="mpirun --np ${NUM_GPUS_PER_WORKER} python ../pretrain_gpt3.py $@ ${gpt_options}"
+run_cmd="USE_DEEPSPEED=1 mpirun --np ${NUM_GPUS_PER_WORKER} python ../pretrain_gpt3.py $@ ${gpt_options}"
 echo "${run_cmd}"
 eval "${run_cmd}"
 
