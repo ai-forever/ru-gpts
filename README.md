@@ -156,7 +156,8 @@ Final perplexity on test set is `12.05`.
 
 🤗HuggingFace model card [link](https://HuggingFace.co/sberbank-ai/rugpt3xl).
 
-See more details [here](examples/ruGPT3XL_generation.ipynb) or [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sberbank-ai/ru-gpts/blob/master/examples/ruGPT3XL_generation.ipynb).
+See more details for generation [here](examples/ruGPT3XL_generation.ipynb) or [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sberbank-ai/ru-gpts/blob/master/examples/ruGPT3XL_generation.ipynb).
+Pretrain script [here](scripts/deepspeed_gpt3_xl.sh)
 
 
 ### Pretraining ruGPT3Large
