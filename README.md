@@ -166,7 +166,7 @@ Model was trained with sequence length 1024 using transformers lib by [SberDevic
 Total training time was around 14 days on 128 GPUs for 1024 context and few days on 16 GPUs for 2048 context.  
 Final perplexity on test set is `13.6`.
 
-You can obtain this model by using transformers with model name `sberbank-ai/rugpt3large_based_on_gpt2` (see [usage](#Usage-ruGPT3Large) for details).
+You can obtain this model by using transformers with model name `sberbank-ai/rugpt3large_based_on_gpt2`.
 
 🤗HuggingFace model card [link](https://HuggingFace.co/sberbank-ai/rugpt3large_based_on_gpt2)
 
