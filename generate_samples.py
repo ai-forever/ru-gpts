@@ -1,5 +1,5 @@
 # coding=utf-8
-# Copyright (c) 2019, NVIDIA CORPORATION.  All rights reserved.
+# Copyright (c) 2020, Sber.  All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,46 +13,42 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Sample Generate ruGPT"""
+"""Sample Generate GPT3"""
 
 import os
 import time
 
 import torch
-import torch.nn.functional as F
+from transformers.tokenization_gpt2 import GPT2Tokenizer
 
-import mpu
-from arguments import get_args
-from data_utils import make_tokenizer
-from fp16 import FP16_Module
-from model import DistributedDataParallel as DDP
-from model import GPT2Model
-from pretrain_megatron import get_masks_and_position_ids
-from pretrain_megatron import initialize_distributed
-from pretrain_megatron import set_random_seed
-from utils import Timers
-from utils import load_checkpoint
-from utils import print_rank_0
+from src import mpu
+from src.arguments import get_args
+from src.fp16 import FP16_Module
+from src.model import DistributedDataParallel as DDP
+from src.model import GPT3Model
+from pretrain_gpt3 import generate
+from pretrain_gpt3 import initialize_distributed
+from pretrain_gpt3 import set_random_seed
+from src.utils import Timers
+from src.utils import export_to_huggingface_model
+from src.utils import print_rank_0, load_checkpoint, DEEPSPEED_WRAP
 
 
 def get_model(args):
     """Build the model."""
 
-    print_rank_0('building ruGPT model ...')
-    model = GPT2Model(
-        num_layers=args.num_layers,
-        vocab_size=args.vocab_size,
-        hidden_size=args.hidden_size,
-        num_attention_heads=args.num_attention_heads,
-        embedding_dropout_prob=args.hidden_dropout,
-        attention_dropout_prob=args.attention_dropout,
-        output_dropout_prob=args.hidden_dropout,
-        max_sequence_length=args.max_position_embeddings,
-        checkpoint_activations=args.checkpoint_activations,
-        checkpoint_num_layers=args.checkpoint_num_layers,
-        parallel_output=False,
-        use_sparse=args.use_sparse
-    )
+    print_rank_0('building GPT3 model ...')
+    model = GPT3Model(num_layers=args.num_layers,
+                      vocab_size=args.vocab_size,
+                      hidden_size=args.hidden_size,
+                      num_attention_heads=args.num_attention_heads,
+                      embedding_dropout_prob=args.hidden_dropout,
+                      attention_dropout_prob=args.attention_dropout,
+                      output_dropout_prob=args.hidden_dropout,
+                      max_sequence_length=args.max_position_embeddings,
+                      checkpoint_activations=args.checkpoint_activations,
+                      checkpoint_num_layers=args.checkpoint_num_layers,
+                      parallel_output=False)
 
     if mpu.get_data_parallel_rank() == 0:
         print(' > number of parameters on model parallel rank {}: {}'.format(
@@ -76,59 +72,30 @@ def setup_model(args):
     """Setup model and optimizer."""
 
     model = get_model(args)
+    if DEEPSPEED_WRAP and args.deepspeed:
+        print_rank_0("DeepSpeed is enabled.")
 
-    if args.load is not None:
-        _ = load_checkpoint(
-            model, None, None, args)
+        model, optimizer, _, lr_scheduler = DEEPSPEED_WRAP.deepspeed.initialize(
+            model=model,
+            optimizer=None,
+            args=args,
+            lr_scheduler=None,
+            mpu=mpu,
+            dist_init_required=False
+        )
+
+    print("Load checkpoint from " + args.load)
+    _ = load_checkpoint(model, None, None, args, deepspeed=DEEPSPEED_WRAP and args.deepspeed)
+    model.eval()
+    print("Loaded")
+    if args.export_huggingface is not None:
+        export_to_huggingface_model(model, args.export_huggingface)
+        print(f"Exported in huggingface format to {args.export_huggingface}")
 
     return model
 
 
-def get_batch(context_tokens, device, args):
-    tokens = context_tokens
-    tokens = tokens.view(args.batch_size, -1).contiguous()
-    tokens = tokens.to(device)
-
-    # Get the masks and postition ids.
-    attention_mask, loss_mask, position_ids = get_masks_and_position_ids(
-        tokens,
-        args.eod_token,
-        args.reset_position_ids,
-        args.reset_attention_mask)
-
-    return tokens, attention_mask, position_ids
-
-
-def top_k_logits(logits, top_k=0, top_p=0.0, filter_value=-float('Inf')):
-    # This function has been mostly taken from huggingface conversational ai code at
-    # https://medium.com/huggingface/how-to-build-a-state-of-the-art-conversational-ai-with-transfer-learning-2d818ac26313
-
-    if top_k > 0:
-        # Remove all tokens with a probability less than the last token of the top-k
-        indices_to_remove = logits < torch.topk(logits, top_k)[0][..., -1, None]
-        logits[indices_to_remove] = filter_value
-
-    if top_p > 0.0:
-        # convert to 1D
-        logits = logits.view(logits.size()[1]).contiguous()
-        sorted_logits, sorted_indices = torch.sort(logits, descending=True)
-        cumulative_probs = torch.cumsum(F.softmax(sorted_logits, dim=-1), dim=-1)
-
-        # Remove tokens with cumulative probability above the threshold
-        sorted_indices_to_remove = cumulative_probs > top_p
-        # Shift the indices to the right to keep also the first token above the threshold
-        sorted_indices_to_remove[..., 1:] = sorted_indices_to_remove[..., :-1].clone()
-        sorted_indices_to_remove[..., 0] = 0
-        indices_to_remove = sorted_indices[sorted_indices_to_remove]
-        logits[indices_to_remove] = filter_value
-        # going back to 2D
-        logits = logits.view(1, -1).contiguous()
-
-    return logits
-
-
-def generate_samples(model, tokenizer, args, device):
-    context_count = 0
+def generate_samples(model, tokenizer, args):
     model.eval()
     with torch.no_grad():
         while True:
@@ -144,16 +111,15 @@ def generate_samples(model, tokenizer, args, device):
                 if "stop" in raw_text:
                     terminate_runs = 1
                 else:
-                    context_tokens = tokenizer.EncodeAsIds(raw_text).tokenization
+                    context_tokens = tokenizer(raw_text)['input_ids']
                     context_length = len(context_tokens)
 
                     if context_length >= args.seq_length // 2:
-                        print("\nContext length", context_length, \
+                        print("\nContext length", context_length,
                               "\nPlease give smaller context (half of the sequence length)!")
                         continue
             else:
-                context_tokens = tokenizer.EncodeAsIds("EMPTY TEXT").tokenization
-                context_length = len(context_tokens)
+                _ = tokenizer("EMPTY TEXT")['input_ids']
 
             terminate_runs_tensor = torch.cuda.LongTensor([terminate_runs])
             torch.distributed.broadcast(terminate_runs_tensor, mpu.get_model_parallel_src_rank(),
@@ -163,83 +129,40 @@ def generate_samples(model, tokenizer, args, device):
             if terminate_runs == 1:
                 return
 
-            pad_id = tokenizer.get_command('pad').Id
-            if context_length < args.seq_length:
-                context_tokens.extend([pad_id] * (args.seq_length - context_length))
-
-            context_tokens_tensor = torch.cuda.LongTensor(context_tokens)
-            context_length_tensor = torch.cuda.LongTensor([context_length])
-
-            torch.distributed.broadcast(context_length_tensor, mpu.get_model_parallel_src_rank(),
-                                        group=mpu.get_model_parallel_group())
-            torch.distributed.broadcast(context_tokens_tensor, mpu.get_model_parallel_src_rank(),
-                                        group=mpu.get_model_parallel_group())
-
-            context_length = context_length_tensor[0].item()
-            tokens, attention_mask, position_ids = get_batch(context_tokens_tensor, device, args)
-
             start_time = time.time()
-
-            counter = 0
-            org_context_length = context_length
-
-            while counter < (org_context_length + args.out_seq_length):
-                logits = model(tokens, position_ids, attention_mask)
-                logits = logits[:, context_length - 1, :] / args.temperature
-                logits = top_k_logits(logits, top_k=args.top_k, top_p=args.top_p)
-                log_probs = F.softmax(logits, dim=-1)
-                prev = torch.multinomial(log_probs, num_samples=1)
-                tokens[0, context_length] = prev[0]
-                context_length += 1
-                counter += 1
-
-                output_tokens_list = tokens.view(-1).contiguous()
-                decode_tokens = tokenizer.DecodeIds(output_tokens_list.tolist())
-                token_end = decode_tokens.find("</s>")
-
-                if mpu.get_model_parallel_rank() == 0 and (counter % 16 == 0 or token_end != -1):
-                    os.system('clear')
-                    print("\nTaken time {:.2f}\n".format(time.time() - start_time), flush=True)
-                    print("\nContext:", raw_text, flush=True)
-                    trim_decode_tokens = decode_tokens[len(raw_text):decode_tokens.find("<pad>")]
-                    print("\nruGPT:", trim_decode_tokens, flush=True)
-                if token_end != -1:
-                    break
+            generated = generate(
+                model, tokenizer, raw_text,
+                out_seq_length=args.out_seq_length,
+                seq_length=args.seq_length,
+                temperature=args.temperature,
+                top_k=args.top_k,
+                top_p=args.top_p
+            )
 
             if mpu.get_model_parallel_rank() == 0:
                 os.system('clear')
                 print("\nTaken time {:.2f}\n".format(time.time() - start_time), flush=True)
                 print("\nContext:", raw_text, flush=True)
-                output_tokens_list = tokens.view(-1).contiguous()
-                decode_tokens = tokenizer.DecodeIds(output_tokens_list.tolist())
-                trim_decode_tokens = decode_tokens[len(raw_text):decode_tokens.find("<pad>")]
-                print("\nruGPT:", trim_decode_tokens, flush=True)
+                print("\nGPT:", generated, flush=True)
             raw_text = None
 
             torch.distributed.barrier(group=mpu.get_model_parallel_group())
-            context_count += 1
 
 
 def prepare_tokenizer(args):
-    tokenizer_args = {
-        'tokenizer_type': args.tokenizer_type,
-        'corpus': None,
-        'model_path': args.tokenizer_path,
-        'vocab_size': args.vocab_size,
-        'model_type': args.tokenizer_model_type,
-        'cache_dir': args.cache_dir}
-    tokenizer = make_tokenizer(**tokenizer_args)
+    tokenizer = GPT2Tokenizer.from_pretrained(args.tokenizer_path)
+    eod_token = tokenizer.encoder['<pad>']
+    num_tokens = len(tokenizer)
 
-    args.tokenizer_num_tokens = tokenizer.num_tokens
-    args.tokenizer_num_type_tokens = tokenizer.num_type_tokens
-    args.eod_token = tokenizer.get_command('eos').Id
+    args.tokenizer_num_tokens = num_tokens
+    args.eod_token = eod_token
 
-    after = tokenizer.num_tokens
-    while after % mpu.get_model_parallel_world_size() != 0:
+    after = num_tokens
+    while after % args.make_vocab_size_divisible_by != 0:
         after += 1
 
     args.vocab_size = after
-    print("prepare tokenizer done", flush=True)
+    print(f"prepare tokenizer done, size {after}", flush=True)
 
     return tokenizer
 
@@ -253,7 +176,7 @@ def main():
     torch.backends.cudnn.enabled = False
 
     # Timer.
-    timers = Timers()
+    _ = Timers()
 
     # Arguments.
     args = get_args()
@@ -274,7 +197,7 @@ def main():
     args.batch_size = 1
 
     # generate samples
-    generate_samples(model, tokenizer, args, torch.cuda.current_device())
+    generate_samples(model, tokenizer, args)
 
 
 if __name__ == "__main__":

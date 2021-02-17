@@ -1,4 +1,4 @@
-# ruGPT3-(Small, Medium, Large, XL)
+# ruGPT3XL, ruGPT3Large, ruGPT3Medium, ruGPT3Small and ruGPT2Large
 This repository contains bunch of autoregressive transformer language models trained on a huge dataset of russian language.
 
 Russian GPT-3 models (ruGPT3XL, ruGPT3Large, ruGPT3Medium, ruGPT3Small) trained with 2048 sequence length with sparse and dense attention blocks. We also provide Russian GPT-2 large model (ruGPT2Large) trained with 1024 sequence length.
@@ -7,76 +7,143 @@ We suggest using ruGPT2Large or ruGPT3XL because this models are well tested and
 
 Usage examples are described in detail [here](examples/).
 
-**Note: If you couldn't download the checkpoint, try adding it to your google drive following this [issue](https://www.geekrar.com/fix-bypass-google-drive-download-limit-error/)**
-
-
 ## Table of contents
-* Setup
-  * [Setup ruGPT3XL](#Setup-ruGPT3XL)
-  * [Setup ruGPT3Large](#Setup-ruGPT3Large)
-  * [Setup ruGPT3Medium](#Setup-ruGPT3Medium)
-  * [Setup ruGPT3Small](#Setup-ruGPT3Small)
-  * [Setup ruGPT2Large](#Setup-ruGPT2Large)
-* Pretraining
+* Setup and usage
+  * [HuggingFace interface](#HuggingFace-interface)
+  * [Megatron interface](#Megatron-interface)
+* Pretraining details
   * [Pretraining ruGPT3XL](#Pretraining-ruGPT3XL)
   * [Pretraining ruGPT3Large](#Pretraining-ruGPT3Large)
   * [Pretraining ruGPT3Medium](#Pretraining-ruGPT3Medium)
   * [Pretraining ruGPT3Small](#Pretraining-ruGPT3Small)
   * [Pretraining ruGPT2Large](#Pretraining-ruGPT2Large)
-* Usage
-  * [Usage ruGPT3XL](#Usage-ruGPT3XL)
-  * [Usage ruGPT3Large](#Usage-ruGPT3Large)
-  * [Usage ruGPT3Medium](#Usage-ruGPT3Medium)
-  * [Usage ruGPT3Small](#Usage-ruGPT3Small)
-  * [Usage ruGPT2Large](#Usage-ruGPT2Large)
+* Advanced
+  * [Pretrained scripts](#Pretrained-scripts-(advanced))
+  * [Convert checkpoint to HuggingFace](#Convert-checkpoint-to-HuggingFace)
 
+## Setup and usage
+Models can be used for inference or finetuning with two ways: 🤗HuggingFace interface or our code based on this [implementation](https://github.com/microsoft/DeepSpeedExamples/tree/master/Megatron-LM).
 
-## Setup
-### Setup ruGPT3XL
-Details of setup the XL model are described on a separate page [here](gw/).
-
-
-### Setup ruGPT3Large
-This model reuses code from [Microsoft fork of Megatron-LM](https://github.com/microsoft/DeepSpeedExamples/tree/master/Megatron-LM).
-Supports python3.6 only.
-
-To use this repo please install the latest version of PyTorch with CUDA support. 
-
-Also this codebase leverages tensorflow-cpu to (optionally) perform dataloading of TFRecords for GPT training. We recommend creating a virtual environment (to avoid breaking existing tf installations) and install our `requirements.txt`. 
+For both ways install transformers:
 
 ```bash
-python -m pip install virtualenv
-virtualenv gpt_env
-source gpt_env/bin/activate
-pip install -r requirements.txt
+pip install transformers==3.5.0
 ```
 
-To use sparse attention blocks, you should additionally install [torch-blocksparse](https://github.com/ptillet/torch-blocksparse):
+### HuggingFace interface
+We support 🤗HuggingFace interface only for ruGPT3Large, ruGPT3Medium, ruGPT3Small and ruGPT2Large models. For RuGPT3XL please use code in this repo because RuGPT3XL model was trained with sparse attention.
+
+Here we can obtain examples of [finetuning](examples/Finetune_RuGPTs_with_HF.ipynb) or [generation](examples/Generate_text_with_RuGPTs_HF.ipynb).
+
+Also this examples is adapted for google colab:
+* finetuning: [![finetuning](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sberbank-ai/ru-gpts/blob/master/examples/Finetune_RuGPTs_with_HF.ipynb)
+* generation: [![generation](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sberbank-ai/ru-gpts/blob/master/examples/Generate_text_with_RuGPTs_HF.ipynb)
+
+Basic usage:
+
+```python
+from transformers import GPT2LMHeadModel, GPT2Tokenizer
+
+
+model_name_or_path = "sberbank-ai/rugpt3large_based_on_gpt2"
+tokenizer = GPT2Tokenizer.from_pretrained(model_name_or_path)
+model = GPT2LMHeadModel.from_pretrained(model_name_or_path).cuda()
+text = "Александр Сергеевич Пушкин родился в "
+input_ids = tokenizer.encode(text, return_tensors="pt").cuda()
+out = model.generate(input_ids.cuda())
+generated_text = list(map(tokenizer.decode, out))[0]
+print(generated_text)
+# Output should be like this:
+# Александр Сергеевич Пушкин родился в \n1799 году. Его отец был крепостным крестьянином, а мать – крепостной крестьянкой. Детство и юность Пушкина прошли в деревне Михайловское под Петербургом. В 1820-х годах семья переехала
+```
+
+For more information about 🤗HuggingFace interface please follow this [documentation](https://HuggingFace.co/transformers/main_classes/model.html#transformers.generation_utils.GenerationMixin.generate).
+
+##### Data issues
+For training pass single txt file.
+
+### Megatron interface
+#### Without deepspeed
+For using our code for finetuning without deepspeed (not recommended) we should install apex:
 
 ```bash
-source gpt_env/bin/activate
-pip install torch-blocksparse
+%%writefile setup.sh
+
+export CUDA_HOME=/usr/local/cuda-10.1
+git clone https://github.com/NVIDIA/apex
+pip install -v --no-cache-dir --global-option="--cpp_ext" --global-option="--cuda_ext" ./apex
+
+sh setup.sh
 ```
 
-Torch-Blocksparse depends on CUDA 10.1 and the [Triton](https://github.com/ptillet/triton) language compiler, which requires llvm-9.
+Example of finetuning, generating and loading/convert megatron checkpoints [here](examples/Finetune_and_generate_RuGPTs_only_with_megatron.ipynb) or [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sberbank-ai/ru-gpts/blob/master/examples/Finetune_and_generate_RuGPTs_only_with_megatron.ipynb)
 
+**Note!** This way is valid for all RuGPTs models except RuGPT3XL.
 
-### Setup ruGPT3Medium
-For this model you can use code from Megatron LM in our repo or use transformers interface. Therefore, you should follow the instructions for setup ruGPT2Large or ruGPT3Large.
+#### Megatron with deepspeed
+For using our code for finetuning with deepspeed (recommended) we should install apex (see previous section) and deepspeed:
 
-
-### Setup ruGPT3Small
-For this model you can use code from microsoft Megatron LM in our repo or use transformers interface. Therefore, you should follow the instructions for setup ruGPT2Large or ruGPT3Large.
-
-
-### Setup ruGPT2Large
-This model is smaller and was trained with [transformers==v2.8.0](https://github.com/huggingface/transformers/tree/v2.8.0).
-For installing use command:
 ```bash
-pip install transformers
+pip install deepspeed==0.3.7
 ```
 
-## Pretraining
+Example of finetuning, generating and loading/convert megatron checkpoints [here](examples/Finetune_and_generate_RuGPTs_deepspeed_megatron.ipynb) or [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sberbank-ai/ru-gpts/blob/master/examples/Finetune_and_generate_RuGPTs_deepspeed_megatron.ipynb)
+
+**Note!** For using deepspeed we should specify environ variable before all your python scripts and run with torch.distributed or mpi:
+
+```
+USE_DEEPSPEED=1 python -m torch.distributed.launch --nproc_per_node 1 ru-gpts/pretrain_gpt3.py \
+  --train-data-path "train.list" \
+  --test-data-path "valid.list" \
+  --max-files-per-process 100 \
+  --save model \
+  --load-huggingface sberbank-ai/rugpt3small_based_on_gpt2 \
+  --model-parallel-size 1 \
+  --num-layers 12 \
+  --hidden-size 768 \
+  --num-attention-heads 12 \
+  --seq-length 2048 \
+  --max-position-embeddings 2048 \
+  --fp16 \
+  --checkpoint-activations \
+  --deepspeed-activation-checkpointing \
+  --deepspeed \
+  --deepspeed_config ru-gpts/src/deepspeed_config/gpt3_small_2048.json
+```
+
+##### Data issues
+We use custom implementation of distributed dataset. For training and evaluating we should specify file `file.list` with list of paths to txt files. All files from `file.list` will be splitted between aviable GPUs. The logic of splitting is described by the following code:
+
+```python
+shard_size = len(files) // world_size
+shard_start = rank * shard_size
+shard_end = (rank + 1) * shard_size
+files = files[shard_start:shard_end]
+```
+
+For more details please see full code of dataset: `src.dataset_rugpt3.RuGpt3TextDataset` and example.
+
+**Note!** This way is valid for all RuGPTs models except RuGPT3XL.
+
+#### Megatron with deepspeed and sparsity
+This section is used mostly for usage of RuGPT3XL model and training models with sparse attention.
+
+```bash
+apt-get install llvm-9-dev
+pip install cpufeature
+pip install triton==0.2.3
+DS_BUILD_CPU_ADAM=1 DS_BUILD_SPARSE_ATTN=1 pip install deepspeed==0.3.7
+```
+
+Test installation of deepspeed you can with the following command: `ds_report`.
+
+Example of inference of RuGPT3XL [here](examples/ruGPT3XL_generation.ipynb) or [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sberbank-ai/ru-gpts/blob/master/examples/ruGPT3XL_generation.ipynb)
+
+For using sparse layers in model use ```--sparse-mode <mode>``` and specify key `"sparse_attention"` at deepspeed_config (RuGPT3XL config [example](src/deepspeed_config/gpt3_xl_sparse_2048.json)). Modes can be: `fixed`, `bigbird`, `bslongformer`, `variable`, `dense`.
+
+More information about sparse attention [here](https://www.deepspeed.ai/tutorials/sparse-attention/).
+
+## Pretraining details
 All pretraining was done on Nvidia Tesla V100-SXM3 32 Gb GPUs on a [Christofari Cluster](https://sbercloud.ru/ru/christofari). Following are the details of pretraining for each model.
 
 
@@ -87,22 +154,23 @@ Model was trained with 512 sequence length using [Deepspeed](https://github.com/
 Total training time was around 10 days on 256 GPUs.  
 Final perplexity on test set is `12.05`.
 
-🤗HuggingFace model card [link](https://huggingface.co/sberbank-ai/rugpt3xl).
+🤗HuggingFace model card [link](https://HuggingFace.co/sberbank-ai/rugpt3xl).
 
-See more details [here](gw/).
+See more details for generation [here](examples/ruGPT3XL_generation.ipynb) or [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sberbank-ai/ru-gpts/blob/master/examples/ruGPT3XL_generation.ipynb).
 
+Our pretraining script [here](scripts/deepspeed_gpt3_xl.sh)
 
 ### Pretraining ruGPT3Large
 Model was trained with sequence length 1024 using transformers lib by [SberDevices](https://sberdevices.ru/) team on 80B tokens for 3 epochs. After that model was finetuned 1 epoch with sequence length 2048. 
-*For load transformers checkpoint use `--load-openai`.
 
 Total training time was around 14 days on 128 GPUs for 1024 context and few days on 16 GPUs for 2048 context.  
 Final perplexity on test set is `13.6`.
 
-You can obtain this model here [GDrive](https://drive.google.com/file/d/1t4xw-nvNLQ8kt9FrWW4bPEgCr45M98vu/view?usp=sharing) [Yandex.Disk](https://yadi.sk/d/X7v84O9jrQ8jJg) [GDrive option-2](https://drive.google.com/file/d/1wtc2iBNTcYrqwOzRyEWYWoVBc9xfsbPP/view?usp=sharing) or use transformers with model name `sberbank-ai/rugpt3large_based_on_gpt2` (see [usage](#Usage-ruGPT3Large) for details).
+You can obtain this model by using transformers with model name `sberbank-ai/rugpt3large_based_on_gpt2`.
 
-🤗HuggingFace model card [link](https://huggingface.co/sberbank-ai/rugpt3large_based_on_gpt2)
+🤗HuggingFace model card [link](https://HuggingFace.co/sberbank-ai/rugpt3large_based_on_gpt2)
 
+Our pretraining script [here](scripts/deepspeed_gpt3_large.sh)
 
 ### Pretraining ruGPT3Medium
 Model was trained with sequence length 1024 using transformers lib by [SberDevices](https://sberdevices.ru/) team on 80B tokens for 3 epoch. After that model was finetuned on 2048 context.
@@ -110,220 +178,55 @@ Model was trained with sequence length 1024 using transformers lib by [SberDevic
 Total training time was around 16 days on 64 GPUs.  
 Final perplexity on test set is `17.4`.
 
-You can obtain this model here [GDrive](https://drive.google.com/file/d/1Lb9ILKw0N2ZSEG80QyaCvkp1b2RAw1pC/view?usp=sharing) [Yandex.Disk](https://yadi.sk/d/yE0cw0QIikCPAg) [GDrive option-2](https://drive.google.com/file/d/1gADn4VxDBVrxZ9Wv4bISbDjwCm_3mrDH/view?usp=sharing) or use transformers with model name `sberbank-ai/rugpt3medium_based_on_gpt2` (see [usage](#Usage-ruGPT3Medium) for details). 
+You can obtain this model by using transformers with model name `sberbank-ai/rugpt3medium_based_on_gpt2`. 
 
-🤗HuggingFace model card [link](https://huggingface.co/sberbank-ai/rugpt3medium_based_on_gpt2)
+🤗HuggingFace model card [link](https://HuggingFace.co/sberbank-ai/rugpt3medium_based_on_gpt2)
 
+Our pretraining script [here](scripts/deepspeed_gpt3_medium.sh)
 
 ### Pretraining ruGPT3Small
 Model was trained with sequence length 1024 using transformers by [SberDevices](https://sberdevices.ru/) team on 80B tokens around 3 epoch. After that model was finetuned on 2048 context.
 
 Total training time took around one week on 32 GPUs.
 
-You can obtain this model here [GDrive](https://drive.google.com/file/d/19dyhhayJSVJpVPwPzqLRIdCtOddvkzJ4/view?usp=sharing) or use transformers with model name `sberbank-ai/rugpt3small_based_on_gpt2` (see [usage](#Usage-ruGPT3Small) for details). 
+You can obtain this model by using transformers with model name `sberbank-ai/rugpt3small_based_on_gpt2`. 
 
-🤗HuggingFace model card [link](https://huggingface.co/sberbank-ai/rugpt3small_based_on_gpt2)
+🤗HuggingFace model card [link](https://HuggingFace.co/sberbank-ai/rugpt3small_based_on_gpt2)
 
+Our pretraining script [here](scripts/deepspeed_gpt3_small.sh)
 
 ### Pretraining ruGPT2Large
 Model was trained with sequence length 1024 using transformers by [SberDevices](https://sberdevices.ru/) team on 170Gb data on 64 GPUs 3 weeks.
 
-You can obtain this model here [GDrive](https://drive.google.com/file/d/1r65MwU0arie8NggxpSmc_3Ja5ldRNS70/view?usp=sharing) [Yandex.Disk](https://yadi.sk/d/BRbn4fl9wqKy0w) [GDrive option-2](https://drive.google.com/file/d/17YuV-uuhSVvMD1cnTe7cR-qscb3BtTiG/view?usp=sharing) or use transformers with model name `sberbank-ai/rugpt2large` (see [usage](#Usage-ruGPT2Large) for details).
+You can obtain this model by using transformers with model name `sberbank-ai/rugpt2large`.
 
-🤗HuggingFace model card [link](https://huggingface.co/sberbank-ai/rugpt2large)
+🤗HuggingFace model card [link](https://HuggingFace.co/sberbank-ai/rugpt2large)
 
+## Advanced
+### Pretrained scripts (advanced)
+Also we add pretraining scripts for all models (except RuGPT2Large). See [scripts](scripts/) dir.
 
-## Usage
-### Usage ruGPT3XL
-See all the details [here](gw/) or run example in [![Google Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sberbank-ai/ru-gpts/blob/master/examples/ruGPT3XL_generation.ipynb)
+**Note!** All training params (such as lr, wd, ...) may was different while real training. This is just for example.
 
-
-### Usage ruGPT3Large
-We provide 2 scripts for pretraining and generation with ruGPT3Large model. Save and load model checkpoints with `--save` and `--load`.
-
-#### Finetuning
-##### Data preparation
-We support three file formats for training, but all of them require preprocessing. First, place your training data in a loose json format, with one json containing a text sample per line. For example:
-
-```json
-{"src": "KISH", "text": "Как же джокер ты хитер", "type": "Ru", "id": "0", "title": "First Part"}
-{"src": "The Internet", "text": "Ты удачи приговор", "type": "Ru", "id": "42", "title": "Second Part"}
-```
-
-The name of the text field of the json could be changed with `--text-key` flag. The other metadata is optional and is not used in training.
-##### Running script
-`bash ./scripts/pretrain_ruGPT3Large.sh`
-
-This script runs pretraining ruGPT3Large on a single GPU. Script contains commands for running on [Christophari](https://sbercloud.ru/ru/christofari):
+### Convert checkpoint to HuggingFace
+For converting megatron checkpoint to HuggingFace format use the following script (example for RuGPT3Small):
 
 ```bash
-MP_SIZE=1
-NUM_GPUS_PER_WORKER=1
-
-mpirun --np ${NUM_GPUS_PER_WORKER} python pretrain_megatron.py \
-       --train-data /home/jovyan/data/train.jsonl \
-       --valid-data /home/jovyan/data/valid.jsonl \
-       --test-data /home/jovyan/data/valid.jsonl \
-       --save /home/jovyan/ruGPT3Large/checkpoints_${now}_${host} \
-       --load /home/jovyan/ruGPT3Large \
-       --tensorboard-dir /home/jovyan/ruGPT3Large/runs_${now}_${host} \
-       --save-interval 500 \
-       --eval-interval 500 \
-       --log-interval 100 \
-       --model-parallel-size ${MP_SIZE} \
-       --num-layers 24 \
-       --hidden-size 1536 \
-       --num-attention-heads 16 \
-       --seq-length 2048 \
-       --max-position-embeddings 2048 \
-       --vocab-size 50257 \
-       --batch-size 1 \
-       --train-iters 200000 \
-       --distributed-backend nccl \
-       --lr 0.00015 \
-       --lr-decay-style cosine \
-       --weight-decay 1e-2 \
-       --clip-grad 1.0 \
-       --warmup .01 \
-       --fp16 \
-       --lazy-loader \
-       --checkpoint-activations \
-       --loose-json \
-       --text-key \
-       --tokenizer-path /home/jovyan/ruGPT3Large \
-       --tokenizer-type GPT2BPETokenizer \
-       --finetune \
+python convert2huggingface.py \
+  --load /path/to/save/dir/ \
+  --model-parallel-size 1 \
+  --num-layers 12 \
+  --hidden-size 768 \
+  --num-attention-heads 12 \
+  --max-position-embeddings 2048 \
+  --tokenizer-path sberbank-ai/rugpt3small_based_on_gpt2 \
+  --no-load-optim \
+  --export-huggingface /path/to/converted/checkpoint
 ```
 
-Or you can use transformers interface:
+After converting we can use HuggingFace model:
 
 ```python
-from transformers import AutoTokenizer, AutoModel
-
-tokenizer = AutoTokenizer.from_pretrained("sberbank-ai/rugpt3large_based_on_gpt2")
-
-model = AutoModel.from_pretrained("sberbank-ai/rugpt3large_based_on_gpt2")
-```
-
-##### Text Generation
-`bash ./scripts/generate_ruGPT3Large.sh`
-
-Starts an interactive terminal session that generates text either conditionally or unconditionally depending on what the user enters into the prompt.  
-The script is capable of top-K and top-P sampling as specified by the appropriate variables within the script.  
-Example of generation:
-
-```text
-Context: на словах ты лев толстой
-ruGPT3Large: а в сущности, - ты тоже не дурак, просто так же, как и твой человек, то есть твоя "жизнь", а также как и ты думаешь по-настоящему "ты" и есть твои "жизнь" или "выбор" в отношении твоего положения.
-
-Context: как же джокер ты хитер
-ruGPT3Large: или автор книги по бизнесу!
-```
-
-Example of generation in [![Googel Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sberbank-ai/ru-gpts/blob/master/examples/ruGPT3_generation_example.ipynb)
-
-
-### Usage ruGPT3Medium
-You can run megatron script with option `--load-openai` or use transformers interface:
-
-```python
-from transformers import AutoTokenizer, AutoModel
-
-tokenizer = AutoTokenizer.from_pretrained("sberbank-ai/rugpt3medium_based_on_gpt2")
-
-model = AutoModel.from_pretrained("sberbank-ai/rugpt3medium_based_on_gpt2")
-```
-
-#### Text Generation
-`bash ./scripts/generate_ruGPT3Medium.sh`
-
-Starts an interactive terminal session that generates text either conditionally or unconditionally depending on what the user enters into the prompt.  
-The script is capable of top-K and top-P sampling as specified by the appropriate variables within the script.  
-Example of generation:
-
-```text
-Context >>> На словах ты Лев Толстой, а на деле
-ruGPT: На словах ты Лев Толстой, а на деле я — Лев Давидович Троцкий, — сказал я. — Так что мы еще посмотрим
-
-Context: как же джокер ты хитер
-ruGPT: как же джокер ты хитер, в этой игре
- - Я не злодей, просто хотел узнать, можно ли узнать о чём?
-```
-
-
-### Usage ruGPT3Small
-You can run megatron script with option `--load-openai` or use transformers interface:
-
-```python
-from transformers import AutoTokenizer, AutoModelWithLMHead
-
-tokenizer = AutoTokenizer.from_pretrained("sberbank-ai/rugpt3small_based_on_gpt2")
-
-model = AutoModelWithLMHead.from_pretrained("sberbank-ai/rugpt3small_based_on_gpt2")
-```
-
-#### Text Generation
-`bash ./scripts/generate_ruGPT3Small.sh`
-
-Starts an interactive terminal session that generates text either conditionally or unconditionally depending on what the user enters into the prompt.  
-The script is capable of top-K and top-P sampling as specified by the appropriate variables within the script.  
-Example of generation:
-
-```text
-Context >>> На словах ты Лев Толстой, а на деле
-ruGPT: На словах ты Лев Толстой, а на деле – Толстой, – с улыбкой заметил Николай, – я вижу, что ты прав.
-
-– А вот это – другое дело, – сказал Лев Толстой, – это дело другое.
-
-– Да, да, – согласился Николай, – я прав.
-
-– А вот что, Лев Николаевич, – сказал Лев Толстой, – я думаю, что в этом отношении у меня нет оснований сомневаться в твоей правоте.
-```
-
-Example of finetuning on essays and generation in [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sberbank-ai/ru-gpts/blob/master/examples/Finetune_ruGPT3Small.ipynb)
-
-
-### Usage ruGPT2Large
-We provide 2 scripts that pretrain and generate with ruGPT2Large from [transformers](https://github.com/huggingface/transformers/tree/v2.8.0) original code.
-
-#### Finetuning
-##### Data preparation
-We can pass to model raw text files.
-##### Running script
-`bash ./scripts/pretrain_ruGPT2Large.sh`
-
-This script runs single gpu ruGPT3Large pretraining. This script contains command for running on [Christofari](https://sbercloud.ru/ru/christofari):
-
-```
-python pretrain_transformers.py \
-    --output_dir=/home/jovyan/rugpt2large/checkpoints_"${now}"_"${host}" \
-    --model_type=gpt2 \
-    --model_name_or_path=/home/jovyan/gpt2_large_bbpe_v50 \
-    --do_train \
-    --train_data_file=/home/jovyan/data/train.txt \
-    --do_eval \
-    --eval_data_file=/home/jovyan/data/valid.txt \
-    --fp16
-```
-
-Or use transformers interface:
-
-```
-from transformers import AutoTokenizer, AutoModel
-
-tokenizer = AutoTokenizer.from_pretrained("sberbank-ai/rugpt2large")
-
-model = AutoModel.from_pretrained("sberbank-ai/rugpt2large")
-```
-
-#### Text Generation
-`bash ./scripts/generate_ruGPT2Large.sh`
-
-Starts an interactive terminal session that generates text either conditionally or unconditionally depending on what the user enters into the prompt.  
-The script is capable of top-K and top-P sampling as specified by the appropriate variables within the script.  
-Example of generation:
-
-```
-Context: На словах ты Лев Толстой, а на деле
-ruGPT: На словах ты Лев Толстой, а на деле – козел!» – так я про себя подумал, но решил не отвечать. Я встал, поклонился
+from transformers import GPT2LMHeadModel
+model = GPT2LMHeadModel.from_pretrained("/path/to/converted/checkpoint")
 ```
