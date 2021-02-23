@@ -232,3 +232,5 @@ After converting we can use HuggingFace model:
 from transformers import GPT2LMHeadModel
 model = GPT2LMHeadModel.from_pretrained("/path/to/converted/checkpoint")
 ```
+
+**Note!** Conversion is worked for all models except RuGPT3XL. For using of RuGPT3XL see example of inference of RuGPT3XL [here](examples/ruGPT3XL_generation.ipynb) or [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sberbank-ai/ru-gpts/blob/master/examples/ruGPT3XL_generation.ipynb).
