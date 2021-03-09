@@ -26,6 +26,8 @@ from torch.nn.parallel.distributed import DistributedDataParallel as torchDDP
 from src import mpu
 from src.fp16 import FP16_Optimizer, FP16_Module
 from src.model import DistributedDataParallel as DDP
+import os
+from src.download_utils import download_model_files
 
 
 class DeepSpeedImportWrap(object):
@@ -459,11 +461,18 @@ def move_weights(our, oai, dst2src=False, double_pos_embeddings=False):
 def load_huggingface_model(model, path, double_pos_embeddings):
     from transformers import GPT2LMHeadModel
     print('Load huggingface model from', path, ('with pos emb doubling' if double_pos_embeddings else ''))
-    h_model = GPT2LMHeadModel.from_pretrained(path)
     model2fill = model
     while isinstance(model2fill, (torchDDP, FP16_Module)):
         model2fill = model2fill.module
-    move_weights(model2fill, h_model, double_pos_embeddings)
+    
+    if path == "sberbank-ai/rugpt3xl":
+        weights_path, _ = download_model_files("sberbank-ai/rugpt3xl")
+        checkpoint = torch.load(weights_path, map_location=lambda storage, loc: storage)['module']
+        model2fill.load_state_dict(checkpoint)
+    else:
+        h_model = GPT2LMHeadModel.from_pretrained(path)
+        move_weights(model2fill, h_model, double_pos_embeddings)
+
     print('Loaded huggingface model', type(model))
     return model
 

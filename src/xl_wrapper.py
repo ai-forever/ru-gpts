@@ -163,10 +163,13 @@ class RuGPT3XL(PreTrainedModel):
         self.tokenizer = tokenizer
 
     @classmethod
-    def from_pretrained(cls, model_name_or_path, seq_len=512):
+    def from_pretrained(cls, model_name_or_path=None, seq_len=512, weights_path=None, deepspeed_config_path=None):
         init_method = 'tcp://' + os.getenv('MASTER_ADDR', 'localhost') + ':' + os.getenv('MASTER_PORT', '6000')
-        torch.distributed.init_process_group(backend='nccl', world_size=1, rank=0, init_method=init_method)
-        mpu.initialize_model_parallel(1)
+        try:
+            torch.distributed.init_process_group(backend='nccl', world_size=1, rank=0, init_method=init_method)
+            mpu.initialize_model_parallel(1)
+        except RuntimeError:
+            logger.info("The default process group has already initialized...")
 
         seed = 1234
         random.seed(seed)
@@ -175,7 +178,8 @@ class RuGPT3XL(PreTrainedModel):
         mpu.model_parallel_cuda_manual_seed(seed)
         tokenizer = GPT2Tokenizer.from_pretrained(model_name_or_path)
         logger.info("Check cached model files...")
-        weights_path, deepspeed_config_path = download_model_files(model_name_or_path)
+        if weights_path is None:
+            weights_path, deepspeed_config_path = download_model_files(model_name_or_path)
         model = setup_model(weights_path, deepspeed_config_path)
         model.cuda()
         model = model.eval()
@@ -253,15 +257,24 @@ class RuGPT3XL(PreTrainedModel):
             lbls = [None] * len(input_ids)
         loss = None
         original_context_length = 0
+        seq_len = self.seq_len
         for tokens, lbl in zip(input_ids, lbls):
             context_tokens = tokens.tolist()
             context_length = len(context_tokens)
             original_context_length = len(context_tokens)
-            if context_length < self.seq_len:
-                context_tokens.extend([self.pad_token_id] * (self.seq_len - context_length))
+            
+            while context_length > seq_len:
+                seq_len += 16
+            if context_length < seq_len:
+                context_tokens.extend([self.pad_token_id] * (seq_len - context_length))
                 if labels is not None:
                     lbl = lbl.tolist()
-                    lbl.extend([self.pad_token_id] * (self.seq_len - context_length))
+                    lbl.extend([self.pad_token_id] * (seq_len - context_length))
+                    lbl = torch.cuda.LongTensor(lbl)
+            if context_length > 2048:
+                context_tokens = context_tokens[-2048:]
+                if labels is not None:
+                    lbl = lbl.tolist()[-2048:]
                     lbl = torch.cuda.LongTensor(lbl)
             context_tokens_tensor = torch.cuda.LongTensor(context_tokens)
             context_length_tensor = torch.cuda.LongTensor([context_length])
