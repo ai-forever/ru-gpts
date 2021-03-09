@@ -141,6 +141,8 @@ Test installation of deepspeed you can with the following command: `ds_report`.
 
 Example of inference of RuGPT3XL [here](examples/ruGPT3XL_generation.ipynb) or [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sberbank-ai/ru-gpts/blob/master/examples/ruGPT3XL_generation.ipynb)
 
+Example of finetune, load finetuned model and generate is [here](examples/ruGPT3XL_finetune_example.ipynb).
+
 For using sparse layers in model use ```--sparse-mode <mode>``` and specify key `"sparse_attention"` at deepspeed_config (RuGPT3XL config [example](src/deepspeed_config/gpt3_xl_sparse_2048.json)). Modes can be: `fixed`, `bigbird`, `bslongformer`, `variable`, `dense`.
 
 More information about sparse attention [here](https://www.deepspeed.ai/tutorials/sparse-attention/).
@@ -160,7 +162,11 @@ Final perplexity on test set is `12.05`.
 
 See more details for generation [here](examples/ruGPT3XL_generation.ipynb) or [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sberbank-ai/ru-gpts/blob/master/examples/ruGPT3XL_generation.ipynb).
 
+Example of finetune, load finetuned model and generate is [here](examples/ruGPT3XL_finetune_example.ipynb).
+
 Our pretraining script [here](scripts/deepspeed_gpt3_xl.sh)
+
+Example of finetuning script [here](scripts/deepspeed_gpt3_xl_finetune.sh)
 
 ### Pretraining ruGPT3Large
 Model was trained with sequence length 1024 using transformers lib by [SberDevices](https://sberdevices.ru/) team on 80B tokens for 3 epochs. After that model was finetuned 1 epoch with sequence length 2048. 
