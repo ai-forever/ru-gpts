@@ -29,7 +29,7 @@ Models can be used for inference or finetuning with two ways: 🤗HuggingFace in
 For both ways install transformers:
 
 ```bash
-pip install transformers==3.5.0
+pip install transformers==4.3.0
 ```
 
 ### HuggingFace interface
