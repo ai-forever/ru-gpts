@@ -1,15 +1,20 @@
+#### Russian GPT-3 models
 # ruGPT3XL, ruGPT3Large, ruGPT3Medium, ruGPT3Small and ruGPT2Large
 This repository contains bunch of autoregressive transformer language models trained on a huge dataset of russian language.
 
-Russian GPT-3 models (ruGPT3XL, ruGPT3Large, ruGPT3Medium, ruGPT3Small) trained with 2048 sequence length with sparse and dense attention blocks. We also provide Russian GPT-2 large model (ruGPT2Large) trained with 1024 sequence length.
+ * Russian GPT-3 models (ruGPT3XL, ruGPT3Large, ruGPT3Medium, ruGPT3Small) trained with 2048 sequence length with sparse and dense attention blocks. We also provide Russian GPT-2 large model (ruGPT2Large) trained with 1024 sequence length.
 
-We suggest using ruGPT2Large or ruGPT3XL because this models are well tested and achieve the best perplexity.
+ * Try Model Generation In Colab! ruGPT-3 XL: [![Try Model Generation In Colab!](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sberbank-ai/ru-gpts/blob/master/examples/ruGPT3XL_generation.ipynb) or ruGPT-3 smaller models: [![Try Model Generation In Colab!](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sberbank-ai/ru-gpts/blob/master/examples/Generate_text_with_RuGPTs_HF.ipynb)
+ 
+ * Usage examples are described in detail [here](examples/). See how fine-tuning works: [![Try Model Generation In Colab!](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sberbank-ai/ru-gpts/blob/master/examples/ruGPT3XL_finetune_example.ipynb)
 
-Usage examples are described in detail [here](examples/).
+ * Old version of code you can find [here](https://github.com/sberbank-ai/ru-gpts/tree/old)
 
-Old version of code you can find [here](https://github.com/sberbank-ai/ru-gpts/tree/old)
+
 
 ## Table of contents
+* OpenSource Solutions with ruGPT-3
+* Papers mentioning ruGPT-3
 * Setup and usage
   * [HuggingFace interface](#HuggingFace-interface)
   * [Megatron interface](#Megatron-interface)
@@ -22,6 +27,68 @@ Old version of code you can find [here](https://github.com/sberbank-ai/ru-gpts/t
 * Advanced
   * [Pretrained scripts](#Pretrained-scripts-(advanced))
   * [Convert checkpoint to HuggingFace](#Convert-checkpoint-to-HuggingFace)
+
+## OpenSource Solutions with ruGPT-3
+
+* ruCLIP [Github](https://github.com/sberbank-ai/ru-clip)
+* Simplification with ruGPT-3 XL [Github](https://github.com/Alenush/rugpt3simplification_rsse )
+* Word normalization (RuNormAS shared task) [Github](https://github.com/RussianNLP/RuNormAS-solution)
+* AI CopyWriter [Github](https://github.com/dilyararimovna/text_expansion)
+* ЕГЭ Generation [Github](https://github.com/orzhan/rugpt3-question-generation )
+* NeuroZhirinovsky [Github](https://github.com/GraphGrailAi/ruGPT3-ZhirV)
+* PseudoKant [Github](https://github.com/AsakoKabe/pseudo-kant )
+* DostoevskyDoesntWriteIt [Github](https://github.com/K7chyp/DostoevskyDoesntWriteIt)
+
+
+## Papers mentioning ruGPT-3
+According to google scholar [search](https://scholar.google.com/scholar?hl=ru&as_sdt=0%2C5&q=rugpt3&btnG=) - feel free to add links to this list
+
+### Text Simplification
+```@article{shatilovsentence,
+  title={Sentence simplification with ruGPT3},
+  author={Shatilov, AA and Rey, AI},
+  url={http://www.dialog-21.ru/media/5281/shatilovaaplusreyai142.pdf}
+}
+
+@article{fenogenovatext,
+  title={Text Simplification with Autoregressive Models},
+  author={Fenogenova, Alena and Sberbank, SberDevices},
+  url={http://www.dialog-21.ru/media/5250/fenogenovaa141.pdf}}
+  ```
+
+### Text Detoxification
+```
+@article{dementieva2021methods,
+  title={Methods for Detoxification of Texts for the Russian Language},
+  author={Dementieva, Daryna and Moskovskiy, Daniil and Logacheva, Varvara and Dale, David and Kozlova, Olga and Semenov, Nikita and Panchenko, Alexander},
+  journal={arXiv preprint arXiv:2105.09052},
+  year={2021},
+  url={https://arxiv.org/abs/2105.09052}
+}
+```
+
+### Paraphrasing and Data Augmentation
+```
+@inproceedings{fenogenova2021russian,
+  title={Russian Paraphrasers: Paraphrase with Transformers},
+  author={Fenogenova, Alena},
+  booktitle={Proceedings of the 8th Workshop on Balto-Slavic Natural Language Processing},
+  pages={11--19},
+  year={2021},
+  url={https://www.aclweb.org/anthology/2021.bsnlp-1.2.pdf}
+}
+``` 
+
+### Model Evaluation
+```
+@article{malykh2021morocco,
+  title={MOROCCO: Model Resource Comparison Framework},
+  author={Malykh, Valentin and Kukushkin, Alexander and Artemova, Ekaterina and Mikhailov, Vladislav and Tikhonova, Maria and Shavrina, Tatiana},
+  journal={arXiv preprint arXiv:2104.14314},
+  year={2021},
+  url={https://arxiv.org/abs/2104.14314}}
+  ``` 
+ 
 
 ## Setup and usage
 Models can be used for inference or finetuning with two ways: 🤗HuggingFace interface or our code based on this [implementation](https://github.com/microsoft/DeepSpeedExamples/tree/master/Megatron-LM).
