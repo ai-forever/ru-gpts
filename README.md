@@ -44,7 +44,8 @@ This repository contains bunch of autoregressive transformer language models tra
 According to google scholar [search](https://scholar.google.com/scholar?hl=ru&as_sdt=0%2C5&q=rugpt3&btnG=) - feel free to add links to this list
 
 ### Text Simplification
-```@article{shatilovsentence,
+```
+@article{shatilovsentence,
   title={Sentence simplification with ruGPT3},
   author={Shatilov, AA and Rey, AI},
   url={http://www.dialog-21.ru/media/5281/shatilovaaplusreyai142.pdf}
