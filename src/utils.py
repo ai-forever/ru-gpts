@@ -334,7 +334,15 @@ def load_checkpoint(model, optimizer, lr_scheduler, args, deepspeed=False):
                 torch.distributed.get_rank(), checkpoint_name))
 
         # Load the checkpoint.
-        sd = torch.load(checkpoint_name, map_location='cpu')
+        if os.path.isfile(checkpoint_name):
+            sd = torch.load(checkpoint_name, map_location='cpu')
+        else:
+            # Try load deepspeed checkpoint with only megatron
+            checkpoint_name = os.path.join(
+                args.load, iteration,
+                'mp_rank_{:02d}_model_states.pt'.format(mpu.get_model_parallel_rank())
+            )
+            sd = torch.load(checkpoint_name, map_location='cpu')
 
         if isinstance(model, torchDDP):
             model = model.module
@@ -343,9 +351,12 @@ def load_checkpoint(model, optimizer, lr_scheduler, args, deepspeed=False):
         try:
             model.load_state_dict(sd['model'])
         except KeyError:
-            print_rank_0('A metadata file exists but unable to load model '
-                         'from checkpoint {}, exiting'.format(checkpoint_name))
-            exit()
+            try:
+                model.load_state_dict(sd['module'])
+            except KeyError:
+                print_rank_0('A metadata file exists but unable to load model '
+                             'from checkpoint {}, exiting'.format(checkpoint_name))
+                exit()
 
         # Optimizer.
         if not release and not args.finetune and not args.no_load_optim:
