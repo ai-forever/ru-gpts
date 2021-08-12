@@ -169,7 +169,7 @@ class RuGPT3XL(PreTrainedModel):
             torch.distributed.init_process_group(backend='nccl', world_size=1, rank=0, init_method=init_method)
             mpu.initialize_model_parallel(1)
         except RuntimeError:
-            logger.info("The default process group has already initialized...")
+            print("The default process group has already initialized...")
 
         seed = 1234
         random.seed(seed)
