@@ -339,7 +339,7 @@ def load_checkpoint(model, optimizer, lr_scheduler, args, deepspeed=False):
         else:
             # Try load deepspeed checkpoint with only megatron
             checkpoint_name = os.path.join(
-                args.load, iteration,
+                args.load, str(iteration),
                 'mp_rank_{:02d}_model_states.pt'.format(mpu.get_model_parallel_rank())
             )
             sd = torch.load(checkpoint_name, map_location='cpu')
