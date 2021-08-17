@@ -21,6 +21,7 @@ gpt_options=" \
        --num-layers 24 \
        --hidden-size 1024 \
        --num-attention-heads 16 \
+       --make-vocab-size-divisible-by 1 \
        --batch-size 1 \
        --seq-length 1024 \
        --max-position-embeddings 2048 \
