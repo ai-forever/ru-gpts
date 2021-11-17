@@ -128,7 +128,7 @@ class GPT3ParallelSelfAttention(torch.nn.Module):
                 query_layer.float(),
                 key_layer.float(),
                 value_layer.float(),
-                attn_mask=ltor_mask)
+                attn_mask=ltor_mask).half()
         else:
             # Raw attention scores. [b, np, s, s]
             attention_scores = torch.matmul(query_layer,
