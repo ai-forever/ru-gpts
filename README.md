@@ -4,11 +4,11 @@ This repository contains bunch of autoregressive transformer language models tra
 
  * Russian GPT-3 models (ruGPT3XL, ruGPT3Large, ruGPT3Medium, ruGPT3Small) trained with 2048 sequence length with sparse and dense attention blocks. We also provide Russian GPT-2 large model (ruGPT2Large) trained with 1024 sequence length.
 
- * Try Model Generation In Colab! ruGPT-3 XL: [![Try Model Generation In Colab!](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sberbank-ai/ru-gpts/blob/master/examples/ruGPT3XL_generation.ipynb) or ruGPT-3 smaller models: [![Try Model Generation In Colab!](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sberbank-ai/ru-gpts/blob/master/examples/Generate_text_with_RuGPTs_HF.ipynb)
+ * Try Model Generation In Colab! ruGPT-3 XL: [![Try Model Generation In Colab!](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ai-forever/ru-gpts/blob/master/examples/ruGPT3XL_generation.ipynb) or ruGPT-3 smaller models: [![Try Model Generation In Colab!](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ai-forever/ru-gpts/blob/master/examples/Generate_text_with_RuGPTs_HF.ipynb)
  
- * Usage examples are described in detail [here](examples/). See how fine-tuning works: [![Try Model Generation In Colab!](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sberbank-ai/ru-gpts/blob/master/examples/ruGPT3XL_finetune_example.ipynb)
+ * Usage examples are described in detail [here](examples/). See how fine-tuning works: [![Try Model Generation In Colab!](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ai-forever/ru-gpts/blob/master/examples/ruGPT3XL_finetune_example.ipynb)
 
- * Old version of code you can find [here](https://github.com/sberbank-ai/ru-gpts/tree/old)
+ * Old version of code you can find [here](https://github.com/ai-forever/ru-gpts/tree/old)
 
 
 
@@ -30,7 +30,7 @@ This repository contains bunch of autoregressive transformer language models tra
 
 ## OpenSource Solutions with ruGPT-3
 
-* ruCLIP [Github](https://github.com/sberbank-ai/ru-clip)
+* ruCLIP [Github](https://github.com/ai-forever/ru-clip)
 * Simplification with ruGPT-3 XL [Github](https://github.com/Alenush/rugpt3simplification_rsse )
 * Word normalization (RuNormAS shared task) [Github](https://github.com/RussianNLP/RuNormAS-solution)
 * AI CopyWriter [Github](https://github.com/dilyararimovna/text_expansion)
@@ -53,7 +53,7 @@ According to google scholar [search](https://scholar.google.com/scholar?hl=ru&as
 
 @article{fenogenovatext,
   title={Text Simplification with Autoregressive Models},
-  author={Fenogenova, Alena and Sberbank, SberDevices},
+  author={Fenogenova, Alena},
   url={http://www.dialog-21.ru/media/5250/fenogenovaa141.pdf}}
   ```
 
@@ -106,8 +106,8 @@ We support 🤗HuggingFace interface only for ruGPT3Large, ruGPT3Medium, ruGPT3S
 Here we can obtain examples of [finetuning](examples/Finetune_RuGPTs_with_HF.ipynb) or [generation](examples/Generate_text_with_RuGPTs_HF.ipynb).
 
 Also this examples is adapted for google colab:
-* finetuning: [![finetuning](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sberbank-ai/ru-gpts/blob/master/examples/Finetune_RuGPTs_with_HF.ipynb)
-* generation: [![generation](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sberbank-ai/ru-gpts/blob/master/examples/Generate_text_with_RuGPTs_HF.ipynb)
+* finetuning: [![finetuning](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ai-forever/ru-gpts/blob/master/examples/Finetune_RuGPTs_with_HF.ipynb)
+* generation: [![generation](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ai-forever/ru-gpts/blob/master/examples/Generate_text_with_RuGPTs_HF.ipynb)
 
 Basic usage:
 
@@ -146,7 +146,7 @@ pip install -v --no-cache-dir --global-option="--cpp_ext" --global-option="--cud
 sh setup.sh
 ```
 
-Example of finetuning, generating and loading/convert megatron checkpoints [here](examples/Finetune_and_generate_RuGPTs_only_with_megatron.ipynb) or [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sberbank-ai/ru-gpts/blob/master/examples/Finetune_and_generate_RuGPTs_only_with_megatron.ipynb)
+Example of finetuning, generating and loading/convert megatron checkpoints [here](examples/Finetune_and_generate_RuGPTs_only_with_megatron.ipynb) or [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ai-forever/ru-gpts/blob/master/examples/Finetune_and_generate_RuGPTs_only_with_megatron.ipynb)
 
 **Note!** This way is valid for all RuGPTs models except RuGPT3XL.
 
@@ -157,7 +157,7 @@ For using our code for finetuning with deepspeed (recommended) we should install
 pip install deepspeed==0.3.7
 ```
 
-Example of finetuning, generating and loading/convert megatron checkpoints [here](examples/Finetune_and_generate_RuGPTs_deepspeed_megatron.ipynb) or [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sberbank-ai/ru-gpts/blob/master/examples/Finetune_and_generate_RuGPTs_deepspeed_megatron.ipynb)
+Example of finetuning, generating and loading/convert megatron checkpoints [here](examples/Finetune_and_generate_RuGPTs_deepspeed_megatron.ipynb) or [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ai-forever/ru-gpts/blob/master/examples/Finetune_and_generate_RuGPTs_deepspeed_megatron.ipynb)
 
 **Note!** For using deepspeed we should specify environ variable before all your python scripts and run with torch.distributed or mpi:
 
@@ -207,7 +207,7 @@ DS_BUILD_CPU_ADAM=1 DS_BUILD_SPARSE_ATTN=1 pip install deepspeed==0.3.7
 
 Test installation of deepspeed you can with the following command: `ds_report`.
 
-Example of inference of RuGPT3XL [here](examples/ruGPT3XL_generation.ipynb) or [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sberbank-ai/ru-gpts/blob/master/examples/ruGPT3XL_generation.ipynb)
+Example of inference of RuGPT3XL [here](examples/ruGPT3XL_generation.ipynb) or [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ai-forever/ru-gpts/blob/master/examples/ruGPT3XL_generation.ipynb)
 
 Example of finetune, load finetuned model and generate is [here](examples/ruGPT3XL_finetune_example.ipynb).
 
@@ -216,19 +216,19 @@ For using sparse layers in model use ```--sparse-mode <mode>``` and specify key 
 More information about sparse attention [here](https://www.deepspeed.ai/tutorials/sparse-attention/).
 
 ## Pretraining details
-All pretraining was done on Nvidia Tesla V100-SXM3 32 Gb GPUs on a [Christofari Cluster](https://sbercloud.ru/ru/christofari). Following are the details of pretraining for each model.
+All pretraining was done on Nvidia Tesla V100-SXM3 32 Gb GPUs on a [Christofari Cluster](https://en.wikipedia.org/wiki/Christofari). Following are the details of pretraining for each model.
 
 
 ### Pretraining ruGPT3XL
-Model was trained with 512 sequence length using [Deepspeed](https://github.com/microsoft/DeepSpeed) and [Megatron](https://github.com/NVIDIA/Megatron-LM) code by [SberDevices](https://sberdevices.ru/) team, on 80B tokens dataset for 4 epochs. After that model was finetuned 1 epoch with sequence length 2048.  
+Model was trained with 512 sequence length using [Deepspeed](https://github.com/microsoft/DeepSpeed) and [Megatron](https://github.com/NVIDIA/Megatron-LM) code by [Devices](https://sberdevices.ru/) team, on 80B tokens dataset for 4 epochs. After that model was finetuned 1 epoch with sequence length 2048.  
 *Note! Model has sparse attention blocks.*
 
 Total training time was around 10 days on 256 GPUs.  
 Final perplexity on test set is `12.05`.
 
-🤗HuggingFace model card [link](https://HuggingFace.co/sberbank-ai/rugpt3xl).
+🤗HuggingFace model card [link](https://HuggingFace.co/ai-forever/rugpt3xl).
 
-See more details for generation [here](examples/ruGPT3XL_generation.ipynb) or [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sberbank-ai/ru-gpts/blob/master/examples/ruGPT3XL_generation.ipynb).
+See more details for generation [here](examples/ruGPT3XL_generation.ipynb) or [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ai-forever/ru-gpts/blob/master/examples/ruGPT3XL_generation.ipynb).
 
 Example of finetune, load finetuned model and generate is [here](examples/ruGPT3XL_finetune_example.ipynb).
 
@@ -237,7 +237,7 @@ Our pretraining script [here](scripts/deepspeed_gpt3_xl.sh)
 Example of finetuning script [here](scripts/deepspeed_gpt3_xl_finetune.sh)
 
 ### Pretraining ruGPT3Large
-Model was trained with sequence length 1024 using transformers lib by [SberDevices](https://sberdevices.ru/) team on 80B tokens for 3 epochs. After that model was finetuned 1 epoch with sequence length 2048. 
+Model was trained with sequence length 1024 using transformers lib by [Devices](https://sberdevices.ru/) team on 80B tokens for 3 epochs. After that model was finetuned 1 epoch with sequence length 2048. 
 
 Total training time was around 14 days on 128 GPUs for 1024 context and few days on 16 GPUs for 2048 context.  
 Final perplexity on test set is `13.6`.
@@ -249,7 +249,7 @@ You can obtain this model by using transformers with model name `sberbank-ai/rug
 Our pretraining script [here](scripts/deepspeed_gpt3_large.sh)
 
 ### Pretraining ruGPT3Medium
-Model was trained with sequence length 1024 using transformers lib by [SberDevices](https://sberdevices.ru/) team on 80B tokens for 3 epoch. After that model was finetuned on 2048 context.
+Model was trained with sequence length 1024 using transformers lib by [Devices](https://sberdevices.ru/) team on 80B tokens for 3 epoch. After that model was finetuned on 2048 context.
 
 Total training time was around 16 days on 64 GPUs.  
 Final perplexity on test set is `17.4`.
@@ -261,7 +261,7 @@ You can obtain this model by using transformers with model name `sberbank-ai/rug
 Our pretraining script [here](scripts/deepspeed_gpt3_medium.sh)
 
 ### Pretraining ruGPT3Small
-Model was trained with sequence length 1024 using transformers by [SberDevices](https://sberdevices.ru/) team on 80B tokens around 3 epoch. After that model was finetuned on 2048 context.
+Model was trained with sequence length 1024 using transformers by [Devices](https://sberdevices.ru/) team on 80B tokens around 3 epoch. After that model was finetuned on 2048 context.
 
 Total training time took around one week on 32 GPUs.
 
@@ -272,7 +272,7 @@ You can obtain this model by using transformers with model name `sberbank-ai/rug
 Our pretraining script [here](scripts/deepspeed_gpt3_small.sh)
 
 ### Pretraining ruGPT2Large
-Model was trained with sequence length 1024 using transformers by [SberDevices](https://sberdevices.ru/) team on 170Gb data on 64 GPUs 3 weeks.
+Model was trained with sequence length 1024 using transformers by [Devices](https://sberdevices.ru/) team on 170Gb data on 64 GPUs 3 weeks.
 
 You can obtain this model by using transformers with model name `sberbank-ai/rugpt2large`.
 
@@ -307,4 +307,4 @@ from transformers import GPT2LMHeadModel
 model = GPT2LMHeadModel.from_pretrained("/path/to/converted/checkpoint")
 ```
 
-**Note!** Conversion is worked for all models except RuGPT3XL. For using of RuGPT3XL see example of inference of RuGPT3XL [here](examples/ruGPT3XL_generation.ipynb) or [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sberbank-ai/ru-gpts/blob/master/examples/ruGPT3XL_generation.ipynb).
+**Note!** Conversion is worked for all models except RuGPT3XL. For using of RuGPT3XL see example of inference of RuGPT3XL [here](examples/ruGPT3XL_generation.ipynb) or [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ai-forever/ru-gpts/blob/master/examples/ruGPT3XL_generation.ipynb).
