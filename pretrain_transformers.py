@@ -68,7 +68,7 @@ class TextDataset(Dataset):
             logger.info("Creating features from dataset file at %s", directory)
 
             self.examples = []
-            with open(file_path, encoding="utf-8") as f:
+            with open(file_path, encoding="utf-8", errors='ignore') as f:
                 text = f.read()
 
             tokenized_text = tokenizer.convert_tokens_to_ids(tokenizer.tokenize(text))
@@ -98,7 +98,7 @@ class LineByLineTextDataset(Dataset):
         # `tokenizers` repo everywhere =)
         logger.info("Creating features from dataset file at %s", file_path)
 
-        with open(file_path, encoding="utf-8") as f:
+        with open(file_path, encoding="utf-8", errors='ignore') as f:
             lines = [line for line in f.read().splitlines() if (len(line) > 0 and not line.isspace())]
 
         self.examples = tokenizer.batch_encode_plus(lines, add_special_tokens=True, model_max_length=block_size)["input_ids"]
