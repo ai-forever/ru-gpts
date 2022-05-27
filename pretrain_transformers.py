@@ -53,7 +53,7 @@ class TextDataset(Dataset):
     def __init__(self, tokenizer: PreTrainedTokenizer, args, file_path: str, block_size=512):
         assert os.path.isfile(file_path)
 
-        block_size = block_size - (tokenizer.max_len - tokenizer.max_len_single_sentence)
+        block_size = block_size - (tokenizer.model_max_length - tokenizer.max_len_single_sentence)
 
         directory, filename = os.path.split(file_path)
         cached_features_file = os.path.join(
@@ -101,7 +101,7 @@ class LineByLineTextDataset(Dataset):
         with open(file_path, encoding="utf-8") as f:
             lines = [line for line in f.read().splitlines() if (len(line) > 0 and not line.isspace())]
 
-        self.examples = tokenizer.batch_encode_plus(lines, add_special_tokens=True, max_length=block_size)["input_ids"]
+        self.examples = tokenizer.batch_encode_plus(lines, add_special_tokens=True, model_max_length=block_size)["input_ids"]
 
     def __len__(self):
         return len(self.examples)
@@ -692,10 +692,10 @@ def main():
         )
 
     if args.block_size <= 0:
-        args.block_size = tokenizer.max_len
+        args.block_size = tokenizer.model_max_length
         # Our input block size will be the max possible for the model
     else:
-        args.block_size = min(args.block_size, tokenizer.max_len)
+        args.block_size = min(args.block_size, tokenizer.model_max_length)
 
     if args.model_name_or_path:
         model = AutoModelWithLMHead.from_pretrained(
