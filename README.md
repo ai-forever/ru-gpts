@@ -38,6 +38,7 @@ This repository contains bunch of autoregressive transformer language models tra
 * NeuroZhirinovsky [Github](https://github.com/GraphGrailAi/ruGPT3-ZhirV)
 * PseudoKant [Github](https://github.com/AsakoKabe/pseudo-kant )
 * DostoevskyDoesntWriteIt [Github](https://github.com/K7chyp/DostoevskyDoesntWriteIt)
+* Grazhdanskaya Oborona Lyrics Generator [Github](https://github.com/armanbolatov/grob)
 
 
 ## Papers mentioning ruGPT-3
