@@ -92,7 +92,7 @@ According to google scholar [search](https://scholar.google.com/scholar?hl=ru&as
  
 
 ## Setup and usage
-Models can be used for inference or finetuning with two ways: 🤗HuggingFace interface or our code based on this [implementation](https://github.com/microsoft/DeepSpeedExamples/tree/master/Megatron-LM).
+Models can be used for inference or finetuning with two ways: 🤗HuggingFace interface or our code based on this [implementation](https://github.com/microsoft/Megatron-DeepSpeed).
 
 For both ways install transformers:
 
