@@ -106,7 +106,7 @@ We support 🤗HuggingFace interface only for ruGPT3Large, ruGPT3Medium, ruGPT3S
 Here we can obtain examples of [finetuning](examples/Finetune_RuGPTs_with_HF.ipynb) or [generation](examples/Generate_text_with_RuGPTs_HF.ipynb).
 
 Also this examples is adapted for google colab:
-* finetuning: [![finetuning](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ai-forever/ru-gpts/blob/master/examples/Finetune_RuGPTs_with_HF.ipynb)
+* finetuning: old interface [![finetuning](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ai-forever/ru-gpts/blob/master/examples/Finetune_RuGPTs_with_HF.ipynb) and origin hf script [![finetuning](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ai-forever/ru-gpts/blob/master/examples/RuGPT3FinetuneHF.ipynb).
 * generation: [![generation](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ai-forever/ru-gpts/blob/master/examples/Generate_text_with_RuGPTs_HF.ipynb)
 
 Basic usage:
