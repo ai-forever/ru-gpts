@@ -82,7 +82,7 @@ def setup_model(weights_path, deepspeed_config_path):
     model = get_model(deepspeed_config_path)
     logger.info("Load checkpoint from " + weights_path)
     checkpoint = torch.load(weights_path, map_location=lambda storage, loc: storage)['module']
-    model.load_state_dict(checkpoint)
+    model.load_state_dict(checkpoint, strict=False)
     model.eval()
     logger.info("Model Loaded")
     return model
