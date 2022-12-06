@@ -97,16 +97,16 @@ Models can be used for inference or finetuning with two ways: 🤗HuggingFace in
 For both ways install transformers:
 
 ```bash
-pip install transformers==3.5.0
+pip install transformers==4.24.0
 ```
 
 ### HuggingFace interface
 We support 🤗HuggingFace interface only for ruGPT3Large, ruGPT3Medium, ruGPT3Small and ruGPT2Large models. For RuGPT3XL please use code in this repo because RuGPT3XL model was trained with sparse attention.
 
-Here we can obtain examples of [finetuning](examples/Finetune_RuGPTs_with_HF.ipynb) or [generation](examples/Generate_text_with_RuGPTs_HF.ipynb).
+Here we can obtain examples of [finetuning](examples/RuGPT3FinetuneHF.ipynb) or [generation](examples/Generate_text_with_RuGPTs_HF.ipynb).
 
 Also this examples is adapted for google colab:
-* finetuning: old interface [![finetuning](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ai-forever/ru-gpts/blob/master/examples/Finetune_RuGPTs_with_HF.ipynb) and origin hf script [![finetuning](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ai-forever/ru-gpts/blob/master/examples/RuGPT3FinetuneHF.ipynb).
+* finetuning: [![finetuning](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ai-forever/ru-gpts/blob/master/examples/RuGPT3FinetuneHF.ipynb).
 * generation: [![generation](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ai-forever/ru-gpts/blob/master/examples/Generate_text_with_RuGPTs_HF.ipynb)
 
 Basic usage:
