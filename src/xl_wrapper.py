@@ -13,7 +13,7 @@ from transformers import GPT2Tokenizer, PreTrainedModel, PretrainedConfig
 from src import mpu
 from .fp16 import FP16_Module
 from .model import GPT3Model
-from .download_utils import download_model_files
+from .download_utils import download_model_files, DEEPSPEED_CONFIG_NAME, hf_hub_download
 from transformers.utils import logging
 
 
@@ -80,11 +80,11 @@ def get_model(deepspeed_config_path):
 
 def setup_model(weights_path, deepspeed_config_path):
     model = get_model(deepspeed_config_path)
-    logger.info("Load checkpoint from " + weights_path)
+    print("Load checkpoint from " + weights_path)
     checkpoint = torch.load(weights_path, map_location=lambda storage, loc: storage)['module']
     model.load_state_dict(checkpoint, strict=False)
     model.eval()
-    logger.info("Model Loaded")
+    print("Model Loaded")
     return model
 
 
@@ -180,6 +180,8 @@ class RuGPT3XL(PreTrainedModel):
         logger.info("Check cached model files...")
         if weights_path is None:
             weights_path, deepspeed_config_path = download_model_files(model_name_or_path)
+        if deepspeed_config_path is None:
+            deepspeed_config_path = hf_hub_download(model_name_or_path, DEEPSPEED_CONFIG_NAME)
         model = setup_model(weights_path, deepspeed_config_path)
         model.cuda()
         model = model.eval()

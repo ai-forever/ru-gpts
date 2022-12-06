@@ -40,6 +40,8 @@ from src.utils import (
     print_args, print_rank_0,
     get_sparse_attention_config, top_k_logits, DEEPSPEED_WRAP
 )
+from huggingface_hub import hf_hub_download
+from src.download_utils import WEIGHTS_NAME
 
 # Flag to use Pytorch ddp which uses overlapping communication and computation.
 USE_TORCH_DDP = False
@@ -75,7 +77,12 @@ def get_model(args):
                       sparse_mode=args.sparse_mode)
 
     if args.load_huggingface is not None:
-        model = load_huggingface_model(model, args.load_huggingface, args.huggingface_double_pos_embeddings)
+        if args.load_huggingface == "sberbank-ai/rugpt3xl":
+            weights_path = hf_hub_download(args.load_huggingface, WEIGHTS_NAME)
+            checkpoint = torch.load(weights_path, map_location="cpu")['module']
+            model.load_state_dict(checkpoint, strict=False)
+        else:
+            model = load_huggingface_model(model, args.load_huggingface, args.huggingface_double_pos_embeddings)
 
     if mpu.get_data_parallel_rank() == 0:
         print(' > number of parameters on model parallel rank {}: {}'.format(

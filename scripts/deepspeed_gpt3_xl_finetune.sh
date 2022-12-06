@@ -1,42 +1,41 @@
-#! /bin/bash
+%%bash
 
+# Model parallel size
+MP_SIZE=1
+# Change for multinode config
 NUM_GPUS_PER_WORKER=1
 
 gpt_options=" \
-       --train-data-path /path/2/train/data/files.list \
-       --max-files-per-process 20000 \
-       --logging-dir=/path/2/log/dir \
+       --train-data-path examples/train.list \
+       --test-data-path examples/valid.list \
        --load-huggingface sberbank-ai/rugpt3xl \
-       --save /path/2/save/model \
-       --tokenizer-path sberbank-ai/rugpt3xl \
-       --cache-prefix p5 \
-       --save-interval 500 \
-       --no-load-optim \
-       --finetune \
-       --log-interval 100 \
-       --model-parallel-size 1 \
+       --logging-dir=examples/log/ \
+       --save examples/model \
+       --save-interval 200 \
+       --model-parallel-size ${MP_SIZE} \
        --num-layers 24 \
        --hidden-size 2048 \
        --num-attention-heads 16 \
-       --batch-size 2 \
+       --batch-size 1 \
        --seq-length 2048 \
        --max-position-embeddings 2048 \
-       --train-iters 20000 \
+       --train-iters 1000 \
        --distributed-backend nccl \
-       --lr 0.000015 \
-       --warmup 0.0 \
-       --lr-decay-style constant \
+       --lr 0.0002 \
+       --lr-decay-style cosine \
        --weight-decay 1e-2 \
+       --warmup .01 \
+       --log-interval 50 \
        --fp16 \
-       --sparse-mode alternating \
        --checkpoint-activations \
        --deepspeed-activation-checkpointing \
+       --sparse-mode alternating \
        --deepspeed \
-       --deepspeed_config ../src/deepspeed_config/gpt3_xl_sparse_2048.json \
+       --deepspeed_config src/deepspeed_config/gpt3_xl_sparse_2048.json \
 "
 
-run_cmd="USE_DEEPSPEED=1 mpirun --np ${NUM_GPUS_PER_WORKER} python ../pretrain_gpt3.py $@ ${gpt_options}"
-echo ${run_cmd}
-eval ${run_cmd}
+run_cmd="USE_DEEPSPEED=1 python -m torch.distributed.launch --nproc_per_node=${NUM_GPUS_PER_WORKER} pretrain_gpt3.py $@ ${gpt_options}"
+echo "${run_cmd}"
+eval "${run_cmd}"
 
 set +x
