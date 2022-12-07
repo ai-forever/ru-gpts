@@ -9,12 +9,12 @@ This repository contains bunch of autoregressive transformer language models tra
  * Usage examples are described in detail [here](examples/). See how fine-tuning works: [![Try Model Generation In Colab!](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ai-forever/ru-gpts/blob/master/examples/ruGPT3XL_finetune_example.ipynb)
 
 ## Table of contents
-* ruGPT3XL
+* [ruGPT3XL](#ruGPT3XL)
   * Setup
   * Usage
   * Finetune
   * [Pretraining details ruGPT3XL](#Pretraining-details-ruGPT3XL)
-* ruGPT3Large, ruGPT3Medium, ruGPT3Small, ruGPT2Large
+* [ruGPT3Large, ruGPT3Medium, ruGPT3Small, ruGPT2Large](ruGPT3Large,-ruGPT3Medium,-ruGPT3Small,-ruGPT2Large)
   * Setup
   * Usage
   * Pretraining details
@@ -22,8 +22,8 @@ This repository contains bunch of autoregressive transformer language models tra
     * [Pretraining details ruGPT3Medium](#Pretraining-details-ruGPT3Medium)
     * [Pretraining details ruGPT3Small](#Pretraining-details-ruGPT3Small)
     * [Pretraining details ruGPT2Large](#Pretraining-details-ruGPT2Large)
-* Papers mentioning ruGPT-3
-* OpenSource Solutions with ruGPT-3
+* [Papers mentioning ruGPT3](#Papers-mentioning-ruGPT3)
+* [OpenSource Solutions with ruGPT3](#OpenSource-Solutions-with-ruGPT3)
 
 # ruGPT3XL
 ## Setup
@@ -168,7 +168,7 @@ You can obtain this model by using transformers with model name `sberbank-ai/rug
 
 🤗HuggingFace model card [link](https://HuggingFace.co/sberbank-ai/rugpt2large)
 
-## OpenSource Solutions with ruGPT-3
+## OpenSource Solutions with ruGPT3
 
 * ruCLIP [Github](https://github.com/ai-forever/ru-clip)
 * Simplification with ruGPT-3 XL [Github](https://github.com/Alenush/rugpt3simplification_rsse )
@@ -180,7 +180,7 @@ You can obtain this model by using transformers with model name `sberbank-ai/rug
 * DostoevskyDoesntWriteIt [Github](https://github.com/K7chyp/DostoevskyDoesntWriteIt)
 
 
-## Papers mentioning ruGPT-3
+## Papers mentioning ruGPT3
 According to google scholar [search](https://scholar.google.com/scholar?hl=ru&as_sdt=0%2C5&q=rugpt3&btnG=) - feel free to add links to this list
 
 ### Text Simplification
