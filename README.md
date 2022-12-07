@@ -8,25 +8,165 @@ This repository contains bunch of autoregressive transformer language models tra
  
  * Usage examples are described in detail [here](examples/). See how fine-tuning works: [![Try Model Generation In Colab!](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ai-forever/ru-gpts/blob/master/examples/ruGPT3XL_finetune_example.ipynb)
 
- * Old version of code you can find [here](https://github.com/ai-forever/ru-gpts/tree/old)
-
-
-
 ## Table of contents
-* OpenSource Solutions with ruGPT-3
+* ruGPT3XL
+  * Setup
+  * Usage
+  * Finetune
+  * [Pretraining details ruGPT3XL](#Pretraining-details-ruGPT3XL)
+* ruGPT3Large, ruGPT3Medium, ruGPT3Small, ruGPT2Large
+  * Setup
+  * Usage
+  * Pretraining details
+    * [Pretraining details ruGPT3Large](#Pretraining-details-ruGPT3Large)
+    * [Pretraining details ruGPT3Medium](#Pretraining-details-ruGPT3Medium)
+    * [Pretraining details ruGPT3Small](#Pretraining-details-ruGPT3Small)
+    * [Pretraining details ruGPT2Large](#Pretraining-details-ruGPT2Large)
 * Papers mentioning ruGPT-3
-* Setup and usage
-  * [HuggingFace interface](#HuggingFace-interface)
-  * [Megatron interface](#Megatron-interface)
-* Pretraining details
-  * [Pretraining ruGPT3XL](#Pretraining-ruGPT3XL)
-  * [Pretraining ruGPT3Large](#Pretraining-ruGPT3Large)
-  * [Pretraining ruGPT3Medium](#Pretraining-ruGPT3Medium)
-  * [Pretraining ruGPT3Small](#Pretraining-ruGPT3Small)
-  * [Pretraining ruGPT2Large](#Pretraining-ruGPT2Large)
-* Advanced
-  * [Pretrained scripts](#Pretrained-scripts-(advanced))
-  * [Convert checkpoint to HuggingFace](#Convert-checkpoint-to-HuggingFace)
+* OpenSource Solutions with ruGPT-3
+
+# ruGPT3XL
+## Setup
+For colab we recommend use the following installation instructions:
+
+```%%bash
+export LD_LIBRARY_PATH=/usr/lib/
+apt-get install clang-9 llvm-9 llvm-9-dev llvm-9-tools
+git clone https://github.com/qywu/apex
+cd apex
+pip install -v --no-cache-dir --global-option="--cpp_ext" --global-option="--cuda_ext" ./
+pip install triton
+DS_BUILD_CPU_ADAM=1 DS_BUILD_SPARSE_ATTN=1 pip install deepspeed
+pip install transformers
+pip install huggingface_hub
+pip install timm==0.3.2
+git clone  https://github.com/sberbank-ai/ru-gpts
+cp ru-gpts/src_utils/trainer_pt_utils.py /usr/local/lib/python3.8/dist-packages/transformers/trainer_pt_utils.py
+cp ru-gpts/src_utils/_amp_state.py /usr/local/lib/python3.8/dist-packages/apex/amp/_amp_state.py
+```
+
+After installation env please restart colab. For checking is all ok, run the following commands:
+
+```
+!ds_report
+# Output:
+...
+sparse_attn ............ [YES] ...... [OKAY]
+...
+import deepspeed.ops.sparse_attention.sparse_attn_op
+```
+
+## Usage
+Here is a simple example of usage. For more see this [example](examples/ruGPT3XL_generation.ipynb) or [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ai-forever/ru-gpts/blob/master/examples/ruGPT3XL_generation.ipynb).
+
+```python
+import sys
+from src.xl_wrapper import RuGPT3XL
+import os
+
+# If run to from content root.
+sys.path.append("ru-gpts/")
+os.environ["USE_DEEPSPEED"] = "1"
+# We can change address and port
+os.environ["MASTER_ADDR"] = "127.0.0.1"
+os.environ["MASTER_PORT"] = "5000"
+gpt = RuGPT3XL.from_pretrained("sberbank-ai/rugpt3xl", seq_len=512)
+gpt.generate(
+    "Кто был президентом США в 2020? ",
+    max_length=50,
+    no_repeat_ngram_size=3,
+    repetition_penalty=2.,
+)
+```
+## Finetuning
+Example of finetune, load finetuned model and generate is [here](examples/ruGPT3XL_finetune_example.ipynb).
+
+Our example of finetuning script [here](scripts/deepspeed_gpt3_xl_finetune.sh)
+
+## Pretraining details ruGPT3XL
+Model was trained with 512 sequence length using [Deepspeed](https://github.com/microsoft/DeepSpeed) and [Megatron](https://github.com/NVIDIA/Megatron-LM) code by [Devices](https://sberdevices.ru/) team, on 80B tokens dataset for 4 epochs. After that model was finetuned 1 epoch with sequence length 2048.  
+*Note! Model has sparse attention blocks.*
+
+Total training time was around 10 days on 256 GPUs.  
+Final perplexity on test set is `12.05`.
+
+🤗HuggingFace model card [link](https://HuggingFace.co/ai-forever/rugpt3xl).
+
+# ruGPT3Large, ruGPT3Medium, ruGPT3Small, ruGPT2Large
+## Setup
+For using ruGPT3Large, ruGPT3Medium, ruGPT3Small, ruGPT2Large just install 🤗HuggingFace transformers.
+
+```bash
+pip install transformers==4.24.0
+```
+
+## Usage
+Here we can obtain examples of [finetuning](examples/RuGPT3FinetuneHF.ipynb) or [generation](examples/Generate_text_with_RuGPTs_HF.ipynb).
+
+Also this examples is adapted for google colab:
+* finetuning: [![finetuning](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ai-forever/ru-gpts/blob/master/examples/RuGPT3FinetuneHF.ipynb).
+* generation: [![generation](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ai-forever/ru-gpts/blob/master/examples/Generate_text_with_RuGPTs_HF.ipynb)
+
+```python
+from transformers import GPT2LMHeadModel, GPT2Tokenizer
+
+
+model_name_or_path = "sberbank-ai/rugpt3large_based_on_gpt2"
+tokenizer = GPT2Tokenizer.from_pretrained(model_name_or_path)
+model = GPT2LMHeadModel.from_pretrained(model_name_or_path).cuda()
+text = "Александр Сергеевич Пушкин родился в "
+input_ids = tokenizer.encode(text, return_tensors="pt").cuda()
+out = model.generate(input_ids.cuda())
+generated_text = list(map(tokenizer.decode, out))[0]
+print(generated_text)
+# Output should be like this:
+# Александр Сергеевич Пушкин родился в \n1799 году. Его отец был крепостным крестьянином, а мать – крепостной крестьянкой. Детство и юность Пушкина прошли в деревне Михайловское под Петербургом. В 1820-х годах семья переехала
+```
+
+### Pretraining details
+All pretraining was done on Nvidia Tesla V100-SXM3 32 Gb GPUs on a [Christofari Cluster](https://en.wikipedia.org/wiki/Christofari). Following are the details of pretraining for each model.
+
+#### Pretraining details ruGPT3Large
+Model was trained with sequence length 1024 using transformers lib by [Devices](https://sberdevices.ru/) team on 80B tokens for 3 epochs. After that model was finetuned 1 epoch with sequence length 2048. 
+
+Total training time was around 14 days on 128 GPUs for 1024 context and few days on 16 GPUs for 2048 context.  
+Final perplexity on test set is `13.6`.
+
+You can obtain this model by using transformers with model name `sberbank-ai/rugpt3large_based_on_gpt2`.
+
+🤗HuggingFace model card [link](https://HuggingFace.co/sberbank-ai/rugpt3large_based_on_gpt2)
+
+Our pretraining script [here](scripts/deepspeed_gpt3_large.sh)
+
+#### Pretraining details ruGPT3Medium
+Model was trained with sequence length 1024 using transformers lib by [Devices](https://sberdevices.ru/) team on 80B tokens for 3 epoch. After that model was finetuned on 2048 context.
+
+Total training time was around 16 days on 64 GPUs.  
+Final perplexity on test set is `17.4`.
+
+You can obtain this model by using transformers with model name `sberbank-ai/rugpt3medium_based_on_gpt2`. 
+
+🤗HuggingFace model card [link](https://HuggingFace.co/sberbank-ai/rugpt3medium_based_on_gpt2)
+
+Our pretraining script [here](scripts/deepspeed_gpt3_medium.sh)
+
+#### Pretraining details ruGPT3Small
+Model was trained with sequence length 1024 using transformers by [Devices](https://sberdevices.ru/) team on 80B tokens around 3 epoch. After that model was finetuned on 2048 context.
+
+Total training time took around one week on 32 GPUs.
+
+You can obtain this model by using transformers with model name `sberbank-ai/rugpt3small_based_on_gpt2`. 
+
+🤗HuggingFace model card [link](https://HuggingFace.co/sberbank-ai/rugpt3small_based_on_gpt2)
+
+Our pretraining script [here](scripts/deepspeed_gpt3_small.sh)
+
+#### Pretraining details ruGPT2Large
+Model was trained with sequence length 1024 using transformers by [Devices](https://sberdevices.ru/) team on 170Gb data on 64 GPUs 3 weeks.
+
+You can obtain this model by using transformers with model name `sberbank-ai/rugpt2large`.
+
+🤗HuggingFace model card [link](https://HuggingFace.co/sberbank-ai/rugpt2large)
 
 ## OpenSource Solutions with ruGPT-3
 
@@ -89,222 +229,3 @@ According to google scholar [search](https://scholar.google.com/scholar?hl=ru&as
   year={2021},
   url={https://arxiv.org/abs/2104.14314}}
   ``` 
- 
-
-## Setup and usage
-Models can be used for inference or finetuning with two ways: 🤗HuggingFace interface or our code based on this [implementation](https://github.com/microsoft/Megatron-DeepSpeed).
-
-For both ways install transformers:
-
-```bash
-pip install transformers==4.24.0
-```
-
-### HuggingFace interface
-We support 🤗HuggingFace interface only for ruGPT3Large, ruGPT3Medium, ruGPT3Small and ruGPT2Large models. For RuGPT3XL please use code in this repo because RuGPT3XL model was trained with sparse attention.
-
-Here we can obtain examples of [finetuning](examples/RuGPT3FinetuneHF.ipynb) or [generation](examples/Generate_text_with_RuGPTs_HF.ipynb).
-
-Also this examples is adapted for google colab:
-* finetuning: [![finetuning](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ai-forever/ru-gpts/blob/master/examples/RuGPT3FinetuneHF.ipynb).
-* generation: [![generation](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ai-forever/ru-gpts/blob/master/examples/Generate_text_with_RuGPTs_HF.ipynb)
-
-Basic usage:
-
-```python
-from transformers import GPT2LMHeadModel, GPT2Tokenizer
-
-
-model_name_or_path = "sberbank-ai/rugpt3large_based_on_gpt2"
-tokenizer = GPT2Tokenizer.from_pretrained(model_name_or_path)
-model = GPT2LMHeadModel.from_pretrained(model_name_or_path).cuda()
-text = "Александр Сергеевич Пушкин родился в "
-input_ids = tokenizer.encode(text, return_tensors="pt").cuda()
-out = model.generate(input_ids.cuda())
-generated_text = list(map(tokenizer.decode, out))[0]
-print(generated_text)
-# Output should be like this:
-# Александр Сергеевич Пушкин родился в \n1799 году. Его отец был крепостным крестьянином, а мать – крепостной крестьянкой. Детство и юность Пушкина прошли в деревне Михайловское под Петербургом. В 1820-х годах семья переехала
-```
-
-For more information about 🤗HuggingFace interface please follow this [documentation](https://HuggingFace.co/transformers/main_classes/model.html#transformers.generation_utils.GenerationMixin.generate).
-
-##### Data issues
-For training pass single txt file.
-
-### Megatron interface
-#### Without deepspeed
-For using our code for finetuning without deepspeed (not recommended) we should install apex:
-
-```bash
-%%writefile setup.sh
-
-export CUDA_HOME=/usr/local/cuda-10.1
-git clone https://github.com/NVIDIA/apex
-pip install -v --no-cache-dir --global-option="--cpp_ext" --global-option="--cuda_ext" ./apex
-
-sh setup.sh
-```
-
-Example of finetuning, generating and loading/convert megatron checkpoints [here](examples/Finetune_and_generate_RuGPTs_only_with_megatron.ipynb) or [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ai-forever/ru-gpts/blob/master/examples/Finetune_and_generate_RuGPTs_only_with_megatron.ipynb)
-
-**Note!** This way is valid for all RuGPTs models except RuGPT3XL.
-
-#### Megatron with deepspeed
-For using our code for finetuning with deepspeed (recommended) we should install apex (see previous section) and deepspeed:
-
-```bash
-pip install deepspeed==0.3.7
-```
-
-Example of finetuning, generating and loading/convert megatron checkpoints [here](examples/Finetune_and_generate_RuGPTs_deepspeed_megatron.ipynb) or [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ai-forever/ru-gpts/blob/master/examples/Finetune_and_generate_RuGPTs_deepspeed_megatron.ipynb)
-
-**Note!** For using deepspeed we should specify environ variable before all your python scripts and run with torch.distributed or mpi:
-
-```
-USE_DEEPSPEED=1 python -m torch.distributed.launch --nproc_per_node 1 ru-gpts/pretrain_gpt3.py \
-  --train-data-path "train.list" \
-  --test-data-path "valid.list" \
-  --max-files-per-process 100 \
-  --save model \
-  --load-huggingface sberbank-ai/rugpt3small_based_on_gpt2 \
-  --model-parallel-size 1 \
-  --num-layers 12 \
-  --hidden-size 768 \
-  --num-attention-heads 12 \
-  --seq-length 2048 \
-  --max-position-embeddings 2048 \
-  --fp16 \
-  --checkpoint-activations \
-  --deepspeed-activation-checkpointing \
-  --deepspeed \
-  --deepspeed_config ru-gpts/src/deepspeed_config/gpt3_small_2048.json
-```
-
-##### Data issues
-We use custom implementation of distributed dataset. For training and evaluating we should specify file `file.list` with list of paths to txt files. All files from `file.list` will be splitted between aviable GPUs. The logic of splitting is described by the following code:
-
-```python
-shard_size = len(files) // world_size
-shard_start = rank * shard_size
-shard_end = (rank + 1) * shard_size
-files = files[shard_start:shard_end]
-```
-
-For more details please see full code of dataset: `src.dataset_rugpt3.RuGpt3TextDataset` and example.
-
-**Note!** This way is valid for all RuGPTs models except RuGPT3XL.
-
-#### Megatron with deepspeed and sparsity
-This section is used mostly for usage of RuGPT3XL model and training models with sparse attention.
-
-```bash
-apt-get install llvm-9-dev
-pip install cpufeature
-pip install triton==0.2.3
-DS_BUILD_CPU_ADAM=1 DS_BUILD_SPARSE_ATTN=1 pip install deepspeed==0.3.7
-```
-
-Test installation of deepspeed you can with the following command: `ds_report`.
-
-Example of inference of RuGPT3XL [here](examples/ruGPT3XL_generation.ipynb) or [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ai-forever/ru-gpts/blob/master/examples/ruGPT3XL_generation.ipynb)
-
-Example of finetune, load finetuned model and generate is [here](examples/ruGPT3XL_finetune_example.ipynb).
-
-For using sparse layers in model use ```--sparse-mode <mode>``` and specify key `"sparse_attention"` at deepspeed_config (RuGPT3XL config [example](src/deepspeed_config/gpt3_xl_sparse_2048.json)). Modes can be: `fixed`, `bigbird`, `bslongformer`, `variable`, `dense`.
-
-More information about sparse attention [here](https://www.deepspeed.ai/tutorials/sparse-attention/).
-
-## Pretraining details
-All pretraining was done on Nvidia Tesla V100-SXM3 32 Gb GPUs on a [Christofari Cluster](https://en.wikipedia.org/wiki/Christofari). Following are the details of pretraining for each model.
-
-
-### Pretraining ruGPT3XL
-Model was trained with 512 sequence length using [Deepspeed](https://github.com/microsoft/DeepSpeed) and [Megatron](https://github.com/NVIDIA/Megatron-LM) code by [Devices](https://sberdevices.ru/) team, on 80B tokens dataset for 4 epochs. After that model was finetuned 1 epoch with sequence length 2048.  
-*Note! Model has sparse attention blocks.*
-
-Total training time was around 10 days on 256 GPUs.  
-Final perplexity on test set is `12.05`.
-
-🤗HuggingFace model card [link](https://HuggingFace.co/ai-forever/rugpt3xl).
-
-See more details for generation [here](examples/ruGPT3XL_generation.ipynb) or [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ai-forever/ru-gpts/blob/master/examples/ruGPT3XL_generation.ipynb).
-
-Example of finetune, load finetuned model and generate is [here](examples/ruGPT3XL_finetune_example.ipynb).
-
-Our pretraining script [here](scripts/deepspeed_gpt3_xl.sh)
-
-Example of finetuning script [here](scripts/deepspeed_gpt3_xl_finetune.sh)
-
-### Pretraining ruGPT3Large
-Model was trained with sequence length 1024 using transformers lib by [Devices](https://sberdevices.ru/) team on 80B tokens for 3 epochs. After that model was finetuned 1 epoch with sequence length 2048. 
-
-Total training time was around 14 days on 128 GPUs for 1024 context and few days on 16 GPUs for 2048 context.  
-Final perplexity on test set is `13.6`.
-
-You can obtain this model by using transformers with model name `sberbank-ai/rugpt3large_based_on_gpt2`.
-
-🤗HuggingFace model card [link](https://HuggingFace.co/sberbank-ai/rugpt3large_based_on_gpt2)
-
-Our pretraining script [here](scripts/deepspeed_gpt3_large.sh)
-
-### Pretraining ruGPT3Medium
-Model was trained with sequence length 1024 using transformers lib by [Devices](https://sberdevices.ru/) team on 80B tokens for 3 epoch. After that model was finetuned on 2048 context.
-
-Total training time was around 16 days on 64 GPUs.  
-Final perplexity on test set is `17.4`.
-
-You can obtain this model by using transformers with model name `sberbank-ai/rugpt3medium_based_on_gpt2`. 
-
-🤗HuggingFace model card [link](https://HuggingFace.co/sberbank-ai/rugpt3medium_based_on_gpt2)
-
-Our pretraining script [here](scripts/deepspeed_gpt3_medium.sh)
-
-### Pretraining ruGPT3Small
-Model was trained with sequence length 1024 using transformers by [Devices](https://sberdevices.ru/) team on 80B tokens around 3 epoch. After that model was finetuned on 2048 context.
-
-Total training time took around one week on 32 GPUs.
-
-You can obtain this model by using transformers with model name `sberbank-ai/rugpt3small_based_on_gpt2`. 
-
-🤗HuggingFace model card [link](https://HuggingFace.co/sberbank-ai/rugpt3small_based_on_gpt2)
-
-Our pretraining script [here](scripts/deepspeed_gpt3_small.sh)
-
-### Pretraining ruGPT2Large
-Model was trained with sequence length 1024 using transformers by [Devices](https://sberdevices.ru/) team on 170Gb data on 64 GPUs 3 weeks.
-
-You can obtain this model by using transformers with model name `sberbank-ai/rugpt2large`.
-
-🤗HuggingFace model card [link](https://HuggingFace.co/sberbank-ai/rugpt2large)
-
-## Advanced
-### Pretrained scripts (advanced)
-Also we add pretraining scripts for all models (except RuGPT2Large). See [scripts](scripts/) dir.
-
-**Note!** All training params (such as lr, wd, ...) may was different while real training. This is just for example.
-
-### Convert checkpoint to HuggingFace
-For converting megatron checkpoint to HuggingFace format use the following script (example for RuGPT3Small):
-
-```bash
-python convert2huggingface.py \
-  --load /path/to/save/dir/ \
-  --model-parallel-size 1 \
-  --num-layers 12 \
-  --hidden-size 768 \
-  --num-attention-heads 12 \
-  --max-position-embeddings 2048 \
-  --tokenizer-path sberbank-ai/rugpt3small_based_on_gpt2 \
-  --no-load-optim \
-  --export-huggingface /path/to/converted/checkpoint
-```
-
-After converting we can use HuggingFace model:
-
-```python
-from transformers import GPT2LMHeadModel
-model = GPT2LMHeadModel.from_pretrained("/path/to/converted/checkpoint")
-```
-
-**Note!** Conversion is worked for all models except RuGPT3XL. For using of RuGPT3XL see example of inference of RuGPT3XL [here](examples/ruGPT3XL_generation.ipynb) or [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ai-forever/ru-gpts/blob/master/examples/ruGPT3XL_generation.ipynb).
